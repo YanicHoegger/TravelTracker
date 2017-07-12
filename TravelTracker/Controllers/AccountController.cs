@@ -19,14 +19,30 @@ namespace TravelTracker.Controllers
         public IActionResult Register()
         {
             return View();
-        }
+        }    
         
         [HttpPost]
         public async Task<IActionResult> Register(string email, string password, string repassword)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError(string.Empty, "Email is empty");
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError(string.Empty, "Password is empty");
+            }
+            if (string.IsNullOrEmpty(repassword))
+            {
+                ModelState.AddModelError(string.Empty, "Retype password is empty");
+            }
             if (password != repassword)
             {
-                ModelState.AddModelError(string.Empty, "Password don't match");
+                ModelState.AddModelError(string.Empty, "Password don't match");        
+            }
+
+            if (!ModelState.IsValid)
+            {
                 return View();
             }
 
