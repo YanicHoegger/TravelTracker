@@ -34,6 +34,10 @@
           "target": "Package",
           "version": "1.1.2"
         },
+        "Microsoft.EntityFrameworkCore.Tools": {
+          "target": "Package",
+          "version": "1.1.0"
+        },
         "Microsoft.Extensions.Logging.Debug": {
           "target": "Package",
           "version": "1.1.2"
@@ -41,6 +45,18 @@
         "Microsoft.VisualStudio.Web.BrowserLink": {
           "target": "Package",
           "version": "1.1.2"
+        },
+        "Microsoft.AspNetCore.Identity": {
+          "target": "Package",
+          "version": "1.1.0"
+        },
+        "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+          "target": "Package",
+          "version": "1.1.0"
+        },
+        "Microsoft.EntityFrameworkCore.Sqlite": {
+          "target": "Package",
+          "version": "1.1.0"
         }
       }
     }

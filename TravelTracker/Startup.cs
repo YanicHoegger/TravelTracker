@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,10 +27,18 @@ namespace TravelTracker
         {
             // Add framework services.
             services.AddMvc();
+            
+            services.AddDbContext<IdentityDbContext>(options => 
+                options.UseSqlite("Data Source=users.sqlite", 
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));  
+            
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityDbContext dbContext)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -41,14 +47,17 @@ namespace TravelTracker
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                dbContext.Database.Migrate(); //this will generate the db if it does not exist
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseIdentity();
             app.UseStaticFiles();
-
+            
+            //TODO: AccountController only accessable when logged in
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
