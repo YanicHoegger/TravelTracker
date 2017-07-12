@@ -56,7 +56,8 @@ namespace TravelTracker
 
             app.UseIdentity();
             app.UseStaticFiles();
-
+            
+            //TODO: AccountController only accessable when logged in
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
