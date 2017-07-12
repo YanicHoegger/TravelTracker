@@ -62,5 +62,26 @@ namespace TravelTracker.Controllers
 
             return Content("Registering user successful");
         }
+        
+        public async Task<IActionResult> Login(string email, string password, bool rememberMe)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login");
+                //return View();
+                return Redirect("~/");
+            }
+
+            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password, isPersistent: rememberMe, lockoutOnFailure: false);
+            if (!passwordSignInResult.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login");
+                //return View();  
+                return Redirect("~/");
+            }
+
+            return Redirect("~/");
+        }
     }
 }
