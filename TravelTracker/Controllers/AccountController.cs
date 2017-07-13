@@ -19,14 +19,35 @@ namespace TravelTracker.Controllers
         public IActionResult Register()
         {
             return View();
-        }
+        }    
         
         [HttpPost]
         public async Task<IActionResult> Register(string email, string password, string repassword)
         {
+            var isValidInput = true;
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError(string.Empty, "Email is empty");
+                isValidInput = false;
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError(string.Empty, "Password is empty");
+                isValidInput = false;
+            }
+            if (string.IsNullOrEmpty(repassword))
+            {
+                ModelState.AddModelError(string.Empty, "Retype password is empty");
+                isValidInput = false;
+            }
             if (password != repassword)
             {
-                ModelState.AddModelError(string.Empty, "Password don't match");
+                ModelState.AddModelError(string.Empty, "Password don't match");     
+                isValidInput = false;
+            }
+
+            if (!isValidInput)
+            {
                 return View();
             }
 
@@ -46,5 +67,33 @@ namespace TravelTracker.Controllers
 
             return Content("Registering user successful");
         }
+        
+        public async Task<IActionResult> Login(string email, string password, bool rememberMe)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login");
+                //return View();
+                return Redirect("~/");
+            }
+
+            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
+            if (!passwordSignInResult.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login");
+                //return View();  
+                return Redirect("~/");
+            }
+
+            return Redirect("~/");
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect("~/");
+        } 
     }
 }

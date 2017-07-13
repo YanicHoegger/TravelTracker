@@ -32,7 +32,14 @@ namespace TravelTracker
                 options.UseSqlite("Data Source=users.sqlite", 
                     optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));  
             
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireLowercase = true;
+                })
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
         }
