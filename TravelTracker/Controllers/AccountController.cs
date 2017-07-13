@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -26,24 +24,29 @@ namespace TravelTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(string email, string password, string repassword)
         {
+            var isValidInput = true;
             if (string.IsNullOrEmpty(email))
             {
                 ModelState.AddModelError(string.Empty, "Email is empty");
+                isValidInput = false;
             }
             if (string.IsNullOrEmpty(password))
             {
                 ModelState.AddModelError(string.Empty, "Password is empty");
+                isValidInput = false;
             }
             if (string.IsNullOrEmpty(repassword))
             {
                 ModelState.AddModelError(string.Empty, "Retype password is empty");
+                isValidInput = false;
             }
             if (password != repassword)
             {
-                ModelState.AddModelError(string.Empty, "Password don't match");        
+                ModelState.AddModelError(string.Empty, "Password don't match");     
+                isValidInput = false;
             }
 
-            if (!ModelState.IsValid)
+            if (!isValidInput)
             {
                 return View();
             }
@@ -85,5 +88,12 @@ namespace TravelTracker.Controllers
 
             return Redirect("~/");
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect("~/");
+        } 
     }
 }

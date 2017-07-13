@@ -1,4 +1,3 @@
-@using System.Security.Claims
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore
 @inject SignInManager<IdentityUser> SignInManager
@@ -34,7 +33,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 @{
-                    if (SignInManager.IsSignedIn(new ClaimsPrincipal()))
+                    if (!SignInManager.IsSignedIn(Context.User))
                     {
                         <form class="navbar-form navbar-right" role="search" asp-controller="Account" asp-action="Login">
                             <div class="form-group">
@@ -49,11 +48,11 @@
                     }
                     else
                     {
-                        <button type="submit" class="btn btn-default navbar-right">Log out</button>
+                        <form class="navbar-form navbar-right" role="search" asp-controller="Account" asp-action="Logout">
+                            <button type="submit" class="btn btn-default">Log out</button>
+                        </form>
                     }
-
                 }
-                
             </div>
         </div>
     </nav>
