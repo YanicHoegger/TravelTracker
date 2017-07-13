@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +75,7 @@ namespace TravelTracker.Controllers
                 return Redirect("~/");
             }
 
-            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password, isPersistent: rememberMe, lockoutOnFailure: false);
+            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
             if (!passwordSignInResult.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login");
