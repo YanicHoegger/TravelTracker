@@ -1,69 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using TravelTracker.Controllers;
 using Xunit;
-using Moq;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace UnitTests
-{
+{    
     public class AccountControllerTests
-    {
-        public AccountControllerTests()
-        {
-            var users = new List<IdentityUser>
-            {
-                new IdentityUser
-                {
-                    UserName = "Test",
-                    Id = Guid.NewGuid().ToString(),
-                    Email = "test@test.it"
-                }
-
-            }.AsQueryable();
-
-            var fakeUserManager = new Mock<FakeUserManager>();
-
-            fakeUserManager.Setup(x => x.Users)
-                .Returns(users);
-
-            fakeUserManager.Setup(x => x.DeleteAsync(It.IsAny<IdentityUser>()))
-                .ReturnsAsync(IdentityResult.Success);
-            fakeUserManager.Setup(x => x.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success);
-            fakeUserManager.Setup(x => x.UpdateAsync(It.IsAny<IdentityUser>()))
-                .ReturnsAsync(IdentityResult.Success);
-
-            var uservalidator = new Mock<IUserValidator<IdentityUser>>();
-            uservalidator.Setup(x => x.ValidateAsync(It.IsAny<UserManager<IdentityUser>>(), It.IsAny<IdentityUser>()))
-                .ReturnsAsync(IdentityResult.Success);
-            var passwordvalidator = new Mock<IPasswordValidator<IdentityUser>>();
-            passwordvalidator.Setup(x => x.ValidateAsync(It.IsAny<UserManager<IdentityUser>>(), It.IsAny<IdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success);
-
-            var signInManager = new Mock<FakeSignInManager>();
-
-            signInManager.Setup(
-                    x => x.PasswordSignInAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                .ReturnsAsync(SignInResult.Success);
-
-
-            //SERVICES CONFIGURATIONS
-            _controller = new AccountController(fakeUserManager.Object, signInManager.Object);
-        }
+    {   
         
-        [Fact]
-        public void RegisterProduceErrorMessageWhenEmptyFields()
+        [Theory]
+		[InlineData(FieldEnum.EmailAddress, "Email is empty")]
+		[InlineData(FieldEnum.Password, "Password is empty")]
+		[InlineData(FieldEnum.Repassword, "Retype password is empty")]
+        public void RegisterProduceErrorMessageWhenEmptyFields(FieldEnum fieldEnum, string incorrectMessage)
         {
-            GivenEmptyFields();
+            GivenCorrectFields();
+            GivenEmptyField(fieldEnum);
 
             WhenRegister();
 
-            ThenResultViewWithEmptyFieldsMessage();
+            ThenResultViewWithIncorrectFieldMessage(incorrectMessage);
         }
 
         [Fact]
@@ -76,18 +33,41 @@ namespace UnitTests
             ThenResultViewIsSuccessView();
         }
 
+        //TODO: When have a better solution for genarating unique messages, enable tests again
+        [Theory(Skip = "Is handled by the user Manager")]
+        [InlineData(FieldEnum.EmailAddress, "somethingWithoutAnAt", "")]
+        [InlineData(FieldEnum.Password, "asd", "")]
+        public void RegisterProduceErrorMessageWhenIncorrectFields(FieldEnum fieldEnum, string incorrectValue, string incorrectMessage)
+        {
+            GivenCorrectFields();
+            GivenIncorrectField(fieldEnum, incorrectValue);
 
-        private readonly AccountController _controller;
+            WhenRegister();
+            
+            ThenResultViewWithIncorrectFieldMessage(incorrectMessage);
+        }
+
+        [Fact]
+        public void RegisterDifferentPasswordAndRepasswordProduceErrorMessage()
+        {
+            GivenDifferentPasswordAndRepassword();
+            
+            WhenRegister();
+            
+            ThenResultViewWithIncorrectFieldMessage("Passwords don't match");
+        }
+
+        #region
+
+        private readonly AccountControllerMock _accountControllerMock = new AccountControllerMock();
         private string _emailAddress;
         private string _password;
         private string _repassword;
         private IActionResult _result;
 
-        private void GivenEmptyFields()
+        private void GivenEmptyField(FieldEnum fieldEnum)
         {
-            _emailAddress = null;
-            _password = null;
-            _repassword = null;
+            SetFieldValue(fieldEnum, null);
         }
 
         private void GivenCorrectFields()
@@ -97,17 +77,61 @@ namespace UnitTests
             _repassword = "AsDfg";
         }
 
+        private void GivenIncorrectField(FieldEnum field, string incorrectFieldValue)
+        {
+            SetFieldValue(field, incorrectFieldValue);
+
+            //Password and repassword have to be the same for this test, 
+            //otherwise an error for not equal password and repassword would occour first
+            if (field.Equals(FieldEnum.Password))
+            {
+                SetFieldValue(FieldEnum.Repassword, incorrectFieldValue);
+            }
+
+			//Password and repassword have to be the same for this test, 
+			//otherwise an error for not equal password and repassword would occour first
+            if (field.Equals(FieldEnum.Repassword))
+			{
+                SetFieldValue(FieldEnum.Password, incorrectFieldValue);
+			}
+        }
+
+        private void SetFieldValue(FieldEnum field, string fieldValue)
+        {
+			switch (field)
+			{
+				case FieldEnum.EmailAddress:
+					_emailAddress = fieldValue;
+					break;
+				case FieldEnum.Password:
+					_password = fieldValue;
+					break;
+				case FieldEnum.Repassword:
+					_repassword = fieldValue;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(field), field, null);
+			}
+        }
+
+        private void GivenDifferentPasswordAndRepassword()
+        {
+            _password = "SomethingCorrect";
+            _repassword = "SomethingCorrectButDifferent";
+            _emailAddress = null;
+        }
+
         private void WhenRegister()
         {
-            _result = _controller.Register(_emailAddress, _password, _repassword).Result;
+            _result = _accountControllerMock.AccountController.Register(_emailAddress, _password, _repassword).Result;
         }
 
-        private void ThenResultViewWithEmptyFieldsMessage()
-        {
-            var resultAsViewResult = Assert.IsType<ViewResult>(_result);
+        //private void ThenResultViewWithEmptyFieldsMessage()
+        //{
+        //    var resultAsViewResult = Assert.IsType<ViewResult>(_result);
 
-            Assert.Equal(3, resultAsViewResult.ViewData.ModelState.ErrorCount);
-        }
+        //    Assert.Equal(3, resultAsViewResult.ViewData.ModelState.ErrorCount);
+        //}
 
         private void ThenResultViewIsSuccessView()
         {
@@ -115,6 +139,25 @@ namespace UnitTests
             
             Assert.Equal("Registering user successful", resultAsContentResult.Content);
         }
+        
+        private void ThenResultViewWithIncorrectFieldMessage(string incorrectMessage)
+        {     
+            Assert.True(GetMessages().Contains(incorrectMessage), string.Format("There is no message '{0}'", incorrectMessage));
+        }
 
+        private IEnumerable<string> GetMessages()
+        {
+            return _accountControllerMock.MessageCollection.Messages.Select(message => message.Message);
+        }
+
+        #endregion
+
+    }
+
+    public enum FieldEnum
+    {
+        EmailAddress,
+        Password,
+        Repassword
     }
 }

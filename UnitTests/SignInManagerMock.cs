@@ -8,10 +8,10 @@ using Moq;
 
 namespace UnitTests
 {
-    public class FakeSignInManager : SignInManager<IdentityUser>
+    public class SignInManagerMock : SignInManager<IdentityUser>
     {
-        public FakeSignInManager()
-            : base(new Mock<FakeUserManager>().Object,
+        public SignInManagerMock()
+            : base(new Mock<UserManagerMock>().Object,
                 new HttpContextAccessor(),
                 new Mock<IUserClaimsPrincipalFactory<IdentityUser>>().Object,
                 new Mock<IOptions<IdentityOptions>>().Object,

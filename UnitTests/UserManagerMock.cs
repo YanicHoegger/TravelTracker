@@ -8,9 +8,9 @@ using Moq;
 
 namespace UnitTests
 {
-    public class FakeUserManager : UserManager<IdentityUser>
+    public class UserManagerMock : UserManager<IdentityUser>
     {
-        public FakeUserManager()
+        public UserManagerMock()
             : base(new Mock<IUserStore<IdentityUser>>().Object,
                 new Mock<IOptions<IdentityOptions>>().Object,
                 new Mock<IPasswordHasher<IdentityUser>>().Object,
