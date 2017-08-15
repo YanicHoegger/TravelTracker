@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using TravelTracker.Messages;
 
 namespace TravelTracker.Controllers
 {
@@ -9,11 +10,13 @@ namespace TravelTracker.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IMessageCollection _messageCollection;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IMessageCollection messageCollection)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _messageCollection = messageCollection;
         }
 
         public IActionResult Register()
@@ -27,22 +30,22 @@ namespace TravelTracker.Controllers
             var isValidInput = true;
             if (string.IsNullOrEmpty(email))
             {
-                ModelState.AddModelError(string.Empty, "Email is empty");
+                _messageCollection.Add(new ErrorInFieldMessage("Email is empty"));
                 isValidInput = false;
             }
             if (string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError(string.Empty, "Password is empty");
+                _messageCollection.Add(new ErrorInFieldMessage("Password is empty"));
                 isValidInput = false;
             }
             if (string.IsNullOrEmpty(repassword))
             {
-                ModelState.AddModelError(string.Empty, "Retype password is empty");
+                _messageCollection.Add(new ErrorInFieldMessage("Retype password is empty"));
                 isValidInput = false;
             }
             if (password != repassword)
             {
-                ModelState.AddModelError(string.Empty, "Password don't match");     
+                _messageCollection.Add(new ErrorInFieldMessage("Passwords don't match"));   
                 isValidInput = false;
             }
 
@@ -61,7 +64,10 @@ namespace TravelTracker.Controllers
             if (!userCreationResult.Succeeded)
             {
                 foreach(var error in userCreationResult.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                {
+                    _messageCollection.Add(new ErrorInFieldMessage(error.Description));
+                }
+                    
                 return View();
             }
 

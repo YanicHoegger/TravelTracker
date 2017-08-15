@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using TravelTracker.Messages
+@inject IMessageCollection MessageCollection
+@{
+    ViewData["Title"] = "Register new accounts";
 }
 
 <form method="POST">
@@ -21,4 +23,9 @@
     <input type="submit"/>
 </form>
 
-<div asp-validation-summary="All"></div>
+<ul> 
+    @foreach(var message in MessageCollection.Messages)
+	{
+	    <li>@message.Message</li>
+	}
+</ul>
