@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -25,38 +26,18 @@ namespace TravelTracker.Controllers
         }    
         
         [HttpPost]
-        public async Task<IActionResult> Register(string email, string password, string repassword)
+        public async Task<IActionResult> Register(string email, string userName, string password, string repassword)
         {
-            var isValidInput = true;
-            if (string.IsNullOrEmpty(email))
-            {
-                _messageCollection.Add(new ErrorInFieldMessage("Email is empty"));
-                isValidInput = false;
-            }
-            if (string.IsNullOrEmpty(password))
-            {
-                _messageCollection.Add(new ErrorInFieldMessage("Password is empty"));
-                isValidInput = false;
-            }
-            if (string.IsNullOrEmpty(repassword))
-            {
-                _messageCollection.Add(new ErrorInFieldMessage("Retype password is empty"));
-                isValidInput = false;
-            }
-            if (password != repassword)
-            {
-                _messageCollection.Add(new ErrorInFieldMessage("Passwords don't match"));   
-                isValidInput = false;
-            }
+            
 
-            if (!isValidInput)
+            if (!CheckInput(email, userName, password, repassword))
             {
                 return View();
             }
 
             var newUser = new IdentityUser 
             {
-                UserName = email,
+                UserName = userName,
                 Email = email
             };
 
@@ -71,7 +52,47 @@ namespace TravelTracker.Controllers
                 return View();
             }
 
+            //TODO: Remove as soon a better way is found to give admin rights
+            //await _userManager.AddClaimAsync(newUser, new Claim(ClaimTypes.Role, "Administrator"));
+
             return Content("Registering user successful");
+        }
+
+        private bool CheckInput(string email, string userName, string password, string repassword)
+        {
+			var isValidInput = true;
+
+			if (string.IsNullOrEmpty(email))
+			{
+				_messageCollection.Add(new ErrorInFieldMessage("Email is empty"));
+				isValidInput = false;
+			}
+
+            if(string.IsNullOrEmpty(userName))
+            {
+				_messageCollection.Add(new ErrorInFieldMessage("User Name is empty"));
+				isValidInput = false;
+            }
+
+			if (string.IsNullOrEmpty(password))
+			{
+				_messageCollection.Add(new ErrorInFieldMessage("Password is empty"));
+				isValidInput = false;
+			}
+
+			if (string.IsNullOrEmpty(repassword))
+			{
+				_messageCollection.Add(new ErrorInFieldMessage("Retype password is empty"));
+				isValidInput = false;
+			}
+
+			if (password != repassword)
+			{
+				_messageCollection.Add(new ErrorInFieldMessage("Passwords don't match"));
+				isValidInput = false;
+			}
+
+            return isValidInput;
         }
         
         public async Task<IActionResult> Login(string email, string password, bool rememberMe)
