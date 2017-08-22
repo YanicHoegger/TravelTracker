@@ -1,0 +1,8 @@
+
+TravelTracker/obj
+TravelTracker/bin
+UnitTests/obj
+UnitTests/bin
+
+*.user
+*.suo
