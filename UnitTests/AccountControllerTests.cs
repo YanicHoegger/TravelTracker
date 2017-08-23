@@ -11,6 +11,7 @@ namespace UnitTests
         
         [Theory]
 		[InlineData(FieldEnum.EmailAddress, "Email is empty")]
+        [InlineData(FieldEnum.UserName, "User Name is empty")]
 		[InlineData(FieldEnum.Password, "Password is empty")]
 		[InlineData(FieldEnum.Repassword, "Retype password is empty")]
         public void RegisterProduceErrorMessageWhenEmptyFields(FieldEnum fieldEnum, string incorrectMessage)
@@ -61,6 +62,7 @@ namespace UnitTests
 
         private readonly AccountControllerMock _accountControllerMock = new AccountControllerMock();
         private string _emailAddress;
+        private string _userName;
         private string _password;
         private string _repassword;
         private IActionResult _result;
@@ -73,6 +75,7 @@ namespace UnitTests
         private void GivenCorrectFields()
         {
             _emailAddress = "test@test.ch";
+            _userName = "testUserName";
             _password = "AsDfg";
             _repassword = "AsDfg";
         }
@@ -103,6 +106,9 @@ namespace UnitTests
 				case FieldEnum.EmailAddress:
 					_emailAddress = fieldValue;
 					break;
+                case FieldEnum.UserName:
+                    _userName = fieldValue;
+					break;
 				case FieldEnum.Password:
 					_password = fieldValue;
 					break;
@@ -123,15 +129,8 @@ namespace UnitTests
 
         private void WhenRegister()
         {
-            _result = _accountControllerMock.AccountController.Register(_emailAddress, _password, _repassword).Result;
+            _result = _accountControllerMock.AccountController.Register(_emailAddress, _userName ,_password, _repassword).Result;
         }
-
-        //private void ThenResultViewWithEmptyFieldsMessage()
-        //{
-        //    var resultAsViewResult = Assert.IsType<ViewResult>(_result);
-
-        //    Assert.Equal(3, resultAsViewResult.ViewData.ModelState.ErrorCount);
-        //}
 
         private void ThenResultViewIsSuccessView()
         {
@@ -157,6 +156,7 @@ namespace UnitTests
     public enum FieldEnum
     {
         EmailAddress,
+        UserName,
         Password,
         Repassword
     }
