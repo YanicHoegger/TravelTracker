@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +24,11 @@ namespace TravelTracker.Controllers
         {
             return View();
         }    
-        
+
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Register(string email, string userName, string password, string repassword)
         {
-            
-
             if (!CheckInput(email, userName, password, repassword))
             {
                 return View();
@@ -52,7 +51,7 @@ namespace TravelTracker.Controllers
                 return View();
             }
 
-            //TODO: Remove as soon a better way is found to give admin rights
+            //TODO: Remove as soon as a better way is found to give admin rights
             //await _userManager.AddClaimAsync(newUser, new Claim(ClaimTypes.Role, "Administrator"));
 
             return Content("Registering user successful");
@@ -60,44 +59,35 @@ namespace TravelTracker.Controllers
 
         private bool CheckInput(string email, string userName, string password, string repassword)
         {
-			var isValidInput = true;
+            var isEmailValid = CheckInputIfNullOrEmpty(email, "Email is empty");
+            var isUserNameValid = CheckInputIfNullOrEmpty(userName, "User Name is empty");
+            var isPasswordValid = CheckInputIfNullOrEmpty(password, "Password is empty");
 
-			if (string.IsNullOrEmpty(email))
-			{
-				_messageCollection.Add(new ErrorInFieldMessage("Email is empty"));
-				isValidInput = false;
-			}
+            //Repassword needs no Null or empty check, because it will be checked anyway when checked for equality with password
 
-            if(string.IsNullOrEmpty(userName))
-            {
-				_messageCollection.Add(new ErrorInFieldMessage("User Name is empty"));
-				isValidInput = false;
-            }
-
-			if (string.IsNullOrEmpty(password))
-			{
-				_messageCollection.Add(new ErrorInFieldMessage("Password is empty"));
-				isValidInput = false;
-			}
-
-			if (string.IsNullOrEmpty(repassword))
-			{
-				_messageCollection.Add(new ErrorInFieldMessage("Retype password is empty"));
-				isValidInput = false;
-			}
-
-			if (password != repassword)
+            var isPasswordAndRepasswordEqual = true;
+            if (isPasswordValid && !password.Equals(repassword))
 			{
 				_messageCollection.Add(new ErrorInFieldMessage("Passwords don't match"));
-				isValidInput = false;
+				isPasswordAndRepasswordEqual = false;
 			}
 
-            return isValidInput;
+            return isEmailValid && isUserNameValid && isPasswordValid && isPasswordAndRepasswordEqual;
+        }
+
+        private bool CheckInputIfNullOrEmpty(string toCheck, string errorMessage)
+        {
+            if(string.IsNullOrEmpty(toCheck))
+            {
+                _messageCollection.Add(new ErrorInFieldMessage(errorMessage));
+                return false;
+            }
+            return true;
         }
         
         public async Task<IActionResult> Login(string email, string password, bool rememberMe)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email ?? "");
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login");
@@ -105,7 +95,7 @@ namespace TravelTracker.Controllers
                 return Redirect("~/");
             }
 
-            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
+            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password ?? "", rememberMe, false);
             if (!passwordSignInResult.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login");
