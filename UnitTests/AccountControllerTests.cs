@@ -13,7 +13,6 @@ namespace UnitTests
 		[InlineData(FieldEnum.EmailAddress, "Email is empty")]
         [InlineData(FieldEnum.UserName, "User Name is empty")]
 		[InlineData(FieldEnum.Password, "Password is empty")]
-		[InlineData(FieldEnum.Repassword, "Retype password is empty")]
         public void RegisterProduceErrorMessageWhenEmptyFields(FieldEnum fieldEnum, string incorrectMessage)
         {
             GivenCorrectFields();
