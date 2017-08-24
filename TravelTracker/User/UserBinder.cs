@@ -39,7 +39,8 @@ namespace TravelTracker.User
         {
             var path = httpContext.Request.Path.Value;
 
-            return path.Replace("/", "");
+            //pattern is /{username}/{maybeSomethingElse}
+            return path.Split('/')[0];
         }
     }
 }
