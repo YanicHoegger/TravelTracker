@@ -20,5 +20,6 @@
   <ItemGroup>
     <Folder Include="Migrations" />
     <Folder Include="Messages\" />
+    <Folder Include="User\" />
   </ItemGroup>
 </Project>

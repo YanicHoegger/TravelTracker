@@ -74,6 +74,14 @@ namespace TravelTracker
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseMvc(routes => 
+            {
+                routes.MapRoute(
+                    "Users",
+                    "{username}",
+                    new { controller = "User", action = "Index", username = ""});
+            });
         }
     }
 }
