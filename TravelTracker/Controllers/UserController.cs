@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using TravelTracker.User;
 
@@ -11,9 +10,9 @@ namespace TravelTracker.Controllers
         {
             if(user == null)
             {
-                return null;   
+                return NotFound();   
             }
-            return Content(user.UserName);
+            return View(user);
         }
     }
 }
