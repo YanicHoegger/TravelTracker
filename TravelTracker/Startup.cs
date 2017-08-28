@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TravelTracker.Messages;
 
 namespace TravelTracker
 {
@@ -42,6 +43,8 @@ namespace TravelTracker
                 })
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<IMessageCollection, MessageCollection>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +73,14 @@ namespace TravelTracker
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseMvc(routes => 
+            {
+                routes.MapRoute(
+                    "Users",
+                    "{username}",
+                    new { controller = "User", action = "Index", username = ""});
             });
         }
     }

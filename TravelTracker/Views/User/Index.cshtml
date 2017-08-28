@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@model IdentityUser
+
+
+@{
+    ViewData["Title"] = Html.DisplayFor(model => model.UserName);
+}
+
+@section Stylesheets{
+    <link rel="stylesheet" href="~/css/userDetails.css" />
+}
+
+@section Scripts{
+    <script src="~/js/userDetails.js"></script>
+}
+
+<h2>User Details</h2>
+
+<!--<form method="POST">
+    <div>
+        <label >Email</label>
+        <input type="email" name="email" value='@Html.DisplayFor(model => model.Email)'/>
+    </div>
+
+    <input type="submit"/>
+</form> -->
+
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <userdetails name="Username" value="@Model.UserName" content-href="#collapse1"></userdetails>
+    <div id="collapse1" class="panel-collapse collapse">
+      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.</div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <userdetails name="Email" value="@Model.Email" content-href="#collapse2"></userdetails>
+    <div id="collapse2" class="panel-collapse collapse">
+      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.</div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <userdetails name="Password" value="" content-href="#collapse3"></userdetails>
+    <div id="collapse3" class="panel-collapse collapse">
+      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.</div>
+    </div>
+  </div>
+</div>
