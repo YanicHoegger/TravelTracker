@@ -1,11 +1,4 @@
-﻿function toggleIcon(e) {
-    $(e.target)
-        .prev('.panel-heading')
-        .find(".more-less")
-        .toggleClass('glyphicon-plus glyphicon-minus');
-}
-
-function addCollapsedVisibility(e) {
+﻿function addCollapsedVisibility(e) {
     var elements = getElements(e);
     for(i = 0; i < elements.length; i++){
         elements[i].classList.add('visbility-collapse');

@@ -5,3 +5,7 @@
 .visbility-collapse {
     display: none;
 }
+
+.dl-horizontal dt {
+    text-align: left !important;
+}
