@@ -9,9 +9,9 @@ namespace TravelTracker.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IMessageCollection _messageCollection;
+        readonly UserManager<IdentityUser> _userManager;
+        readonly SignInManager<IdentityUser> _signInManager;
+        readonly IMessageCollection _messageCollection;
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IMessageCollection messageCollection)
         {
@@ -23,7 +23,7 @@ namespace TravelTracker.Controllers
         public IActionResult Register()
         {
             return View();
-        }    
+        }
 
         [Authorize(Roles = "Administrator")]
         [HttpPost]
@@ -34,7 +34,7 @@ namespace TravelTracker.Controllers
                 return View();
             }
 
-            var newUser = new IdentityUser 
+            var newUser = new IdentityUser
             {
                 UserName = userName,
                 Email = email
@@ -43,11 +43,11 @@ namespace TravelTracker.Controllers
             var userCreationResult = await _userManager.CreateAsync(newUser, password);
             if (!userCreationResult.Succeeded)
             {
-                foreach(var error in userCreationResult.Errors)
+                foreach (var error in userCreationResult.Errors)
                 {
                     _messageCollection.Add(new ErrorInFieldMessage(error.Description));
                 }
-                    
+
                 return View();
             }
 
@@ -67,27 +67,27 @@ namespace TravelTracker.Controllers
 
             var isPasswordAndRepasswordEqual = true;
             if (isPasswordValid && !password.Equals(repassword))
-			{
-				_messageCollection.Add(new ErrorInFieldMessage("Passwords don't match"));
-				isPasswordAndRepasswordEqual = false;
-			}
+            {
+                _messageCollection.Add(new ErrorInFieldMessage("Passwords don't match"));
+                isPasswordAndRepasswordEqual = false;
+            }
 
             return isEmailValid && isUserNameValid && isPasswordValid && isPasswordAndRepasswordEqual;
         }
 
-        private bool CheckInputIfNullOrEmpty(string toCheck, string errorMessage)
+        bool CheckInputIfNullOrEmpty(string toCheck, string errorMessage)
         {
-            if(string.IsNullOrEmpty(toCheck))
+            if (string.IsNullOrEmpty(toCheck))
             {
                 _messageCollection.Add(new ErrorInFieldMessage(errorMessage));
                 return false;
             }
             return true;
         }
-        
+
         public async Task<IActionResult> Login(string email, string password, bool rememberMe)
         {
-            var user = await _userManager.FindByEmailAsync(email ?? "");
+            var user = await _userManager.FindByEmailAsync(email ?? ""); //TODO: Is there a better way, so the arguments would come as empty strings instead of null???
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login");
@@ -103,14 +103,14 @@ namespace TravelTracker.Controllers
                 return Redirect("~/");
             }
 
-            return Redirect("~/");
+            return Redirect("~/" + user.UserName);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return Redirect("~/");
-        } 
+        }
     }
 }
