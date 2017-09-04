@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using TravelTracker.Authorization;
 using TravelTracker.Messages;
 
 namespace TravelTracker
@@ -28,6 +30,14 @@ namespace TravelTracker
         {
             // Add framework services.
             services.AddMvc();
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy("UserLogedIn",
+								  policy => policy.Requirements.Add(new UserIsLogedInRequirement()));
+			});
+
+			services.AddSingleton<IAuthorizationHandler, UserIsLogedInHandler>();
             
             services.AddDbContext<IdentityDbContext>(options => 
                 options.UseSqlite("Data Source=users.sqlite", 
@@ -71,15 +81,15 @@ namespace TravelTracker
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "Default",
+                    "{controller=Home}/{action=Index}/{id?}");
             });
 
             app.UseMvc(routes => 
             {
                 routes.MapRoute(
                     "Users",
-                    "{username}",
+                    "{username}/{action?}",
                     new { controller = "User", action = "Index", username = ""});
             });
         }

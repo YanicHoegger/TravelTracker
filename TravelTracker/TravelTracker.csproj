@@ -23,5 +23,6 @@
     <Folder Include="User\" />
     <Folder Include="Views\User\" />
     <Folder Include="TagHelpers\" />
+    <Folder Include="Authorization\" />
   </ItemGroup>
 </Project>

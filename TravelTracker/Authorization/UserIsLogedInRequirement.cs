@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+
 namespace TravelTracker.Authorization
 {
-    public class UserIsLogedInRequirement
+    public class UserIsLogedInRequirement : IAuthorizationRequirement
     {
-        public UserIsLogedInRequirement()
-        {
-        }
     }
 }
