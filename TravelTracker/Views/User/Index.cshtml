@@ -24,7 +24,7 @@
 		<form method="POST" asp-controller="User" asp-action="ChangeUserName">
             <div class="form-group">
                 <label>New Username</label>
-                <input type="text" name="newUserName" value='@Html.DisplayFor(model => model.UserName)' class="form-control"/>
+                <input type="text" name="newUserName" value="@Model.UserName" class="form-control"/>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
         </form>
@@ -34,19 +34,37 @@
   <div class="panel panel-default">
     <userdetails name="Email" value="@Model.Email" content-href="#collapse2"></userdetails>
     <div id="collapse2" class="panel-collapse collapse">
-      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat.</div>
+      <div class="panel-body">
+        <form method="POST" asp-controller="User" asp-action="ChangeEmail">
+            <div class="form-group">
+                <label>New Email</label>
+                <input type="text" name="newEmail" value="@Model.Email" class="form-control"/>
+            </div>
+            <input type="submit" value="Save" class="btn btn-primary"/>
+        </form>
+      </div>
     </div>
   </div>
   <div class="panel panel-default">
     <userdetails name="Password" value="" content-href="#collapse3"></userdetails>
     <div id="collapse3" class="panel-collapse collapse">
-      <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat.</div>
+	    <div class="panel-body">	
+            <form method="POST" asp-controller="User" asp-action="ChangePassword">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" name="currentPassword" class="form-control"/>
+                </div>
+    			<div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" name="newPassword" class="form-control"/>
+                </div>
+    			<div class="form-group">
+                    <label>Retype New Password</label>
+                    <input type="password" name="retypeNewPassword" class="form-control"/>
+                </div>
+                <input type="submit" value="Save" class="btn btn-primary"/>
+            </form>
+	    </div>
     </div>
   </div>
 </div>

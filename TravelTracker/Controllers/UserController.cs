@@ -7,14 +7,14 @@ using TravelTracker.User;
 
 namespace TravelTracker.Controllers
 {
+    //TODO: Feedback if not successfull changed data
+    [Authorize(Policy = "UserLogedIn")]
     public class UserController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public UserController(UserManager<IdentityUser> userManager)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
         }
 
@@ -28,7 +28,7 @@ namespace TravelTracker.Controllers
             return View(user);
         }
 
-        [Authorize(Policy = "UserLogedIn")]
+        [HttpPost]
         public async Task<IActionResult> ChangeUserName([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, string newUserName)
         {
             if(user == null)
@@ -36,15 +36,45 @@ namespace TravelTracker.Controllers
                 return NotFound();
             }
 
-            //if(_signInManager.IsSignedIn(HttpContext.User) && HttpContext.User.Identity.Name == user.UserName)
-            //{
-            //}
-
             user.UserName = newUserName;
 
             await _userManager.UpdateAsync(user);
 
             return Redirect("~/" + newUserName);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, string newEmail)
+        {
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+            user.Email = newEmail;
+
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+		public async Task<IActionResult> ChangePassword([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, 
+                                                        string currentPassword, string newPassword, string retypeNewPassword)
+		{
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+            if(!newPassword.Equals(retypeNewPassword))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+			return RedirectToAction(nameof(Index));
+		}
     }
 }
