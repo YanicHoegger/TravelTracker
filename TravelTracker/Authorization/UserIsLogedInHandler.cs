@@ -10,12 +10,10 @@ namespace TravelTracker.Authorization
 {
     public class UserIsLogedInHandler : AuthorizationHandler<UserIsLogedInRequirement>
     {
-        readonly UserManager<IdentityUser> _userManager;
         readonly SignInManager<IdentityUser> _signInManager;
 
-        public UserIsLogedInHandler(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public UserIsLogedInHandler(SignInManager<IdentityUser> signInManager)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
         }
 
