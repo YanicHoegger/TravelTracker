@@ -1,30 +1,28 @@
-﻿@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
-@model IdentityUser
+﻿@using TravelTracker.Views
+@using TravelTracker.User
+@model UserDetailsViewModel
 
 
 @{
-    ViewData["Title"] = Html.DisplayFor(model => model.UserName);
+    ViewData["Title"] = Model.NewUserName.NewUserName;
 }
 
 @section Stylesheets{
     <link rel="stylesheet" href="~/css/userDetails.css" />
 }
 
-@section Scripts{
-    <script src="~/js/userDetails.js"></script>
-}
-
 <h2>User Details</h2>
 
 <div class="panel-group" id="accordion">
   <div class="panel panel-default">
-    <userdetails name="Username" value="@Model.UserName" content-href="#collapse1"></userdetails>
-    <div id="collapse1" class="panel-collapse collapse">
+    <userdetails name="Username" value="@Model.NewUserName.NewUserName" content-href="#collapse1"></userdetails>
+    <div id="collapse1" class="panel-collapse collapse @(ViewData.ModelState.IsFieldInvalid("NewUserName.NewUserName") ? "in" : "")">
       <div class="panel-body">
 		<form method="POST" asp-controller="User" asp-action="ChangeUserName">
             <div class="form-group">
                 <label>New Username</label>
-                <input type="text" name="newUserName" value="@Model.UserName" class="form-control"/>
+                <input asp-for="NewUserName.NewUserName" value="@Model.NewUserName.NewUserName" class="form-control"/>
+				<span asp-validation-for="NewUserName.NewUserName" class="text-danger"></span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
         </form>
@@ -32,13 +30,14 @@
     </div>
   </div>
   <div class="panel panel-default">
-    <userdetails name="Email" value="@Model.Email" content-href="#collapse2"></userdetails>
-    <div id="collapse2" class="panel-collapse collapse">
+    <userdetails name="Email" value="@Model.NewEmail.NewEmail" content-href="#collapse2"></userdetails>
+    <div id="collapse2" class="panel-collapse collapse @(ViewData.ModelState.IsFieldInvalid("NewEmail.NewEmail") ? "in" : "")">
       <div class="panel-body">
         <form method="POST" asp-controller="User" asp-action="ChangeEmail">
             <div class="form-group">
                 <label>New Email</label>
-                <input type="text" name="newEmail" value="@Model.Email" class="form-control"/>
+                <input asp-for="NewEmail.NewEmail" value="@Model.NewEmail.NewEmail" class="form-control"/>
+				<span asp-validation-for="NewEmail.NewEmail" class="text-danger"></span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
         </form>
@@ -47,24 +46,38 @@
   </div>
   <div class="panel panel-default">
     <userdetails name="Password" value="" content-href="#collapse3"></userdetails>
-    <div id="collapse3" class="panel-collapse collapse">
+    <div id="collapse3" class="panel-collapse collapse @(ViewData.ModelState.IsAFieldInvalid("NewPassword.CurrentPassword", "NewPassword.NewPassword", "NewPassword.RetypeNewPassword", "NewPassword.PasswordError") ? "in" : "")">
 	    <div class="panel-body">	
             <form method="POST" asp-controller="User" asp-action="ChangePassword">
+				<span asp-validation-for="NewPassword.PasswordError" class="text-danger"></span>
                 <div class="form-group">
                     <label>Current Password</label>
-                    <input type="password" name="currentPassword" class="form-control"/>
+                    <input asp-for="NewPassword.CurrentPassword" type="password" class="form-control"/>
+					<span asp-validation-for="NewPassword.CurrentPassword" class="text-danger"></span>
                 </div>
     			<div class="form-group">
                     <label>New Password</label>
-                    <input type="password" name="newPassword" class="form-control"/>
+                    <input asp-for="NewPassword.NewPassword" type="password" class="form-control"/>
+					<span asp-validation-for="NewPassword.NewPassword" class="text-danger"></span>
                 </div>
     			<div class="form-group">
                     <label>Retype New Password</label>
-                    <input type="password" name="retypeNewPassword" class="form-control"/>
-                </div>
-                <input type="submit" value="Save" class="btn btn-primary"/>
-            </form>
+                    <input asp-for="NewPassword.RetypeNewPassword" type="password" class="form-control"/>
+					<span asp-validation-for="NewPassword.RetypeNewPassword" class="text-danger"></span>
+                </div>					
+                <input type="submit" value="Save" class="btn btn-primary"/>				
+            </form>		    
 	    </div>
     </div>
   </div>
 </div>
+
+<!-- TODO: Lock edit buttons when input is made-->
+<!-- TODO: When error, collapse is open but edit button is still shown-->
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script src="~/js/userDetails.js"></script>
+    <script src="~/js/user-validation.js"></script>
+}

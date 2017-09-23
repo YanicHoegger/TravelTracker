@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TravelTracker.Authorization;
 using TravelTracker.Messages;
+using TravelTracker.User;
 
 namespace TravelTracker
 {
@@ -41,16 +42,10 @@ namespace TravelTracker
             
             services.AddDbContext<IdentityDbContext>(options => 
                 options.UseSqlite("Data Source=users.sqlite", 
-                    optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));  
-            
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredLength = 6;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireLowercase = true;
-                })
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
+
+            var identityOptionsProvider = new IdentityOptionsProvider();
+            services.AddIdentity<IdentityUser, IdentityRole>(identityOptionsProvider.SetOptions)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
 

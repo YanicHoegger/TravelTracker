@@ -7,7 +7,6 @@ using TravelTracker.User;
 
 namespace TravelTracker.Controllers
 {
-    //TODO: Feedback if not successfull changed data
     [Authorize(Policy = "UserLogedIn")]
     public class UserController : Controller
     {
@@ -25,10 +24,11 @@ namespace TravelTracker.Controllers
                 return NotFound();   
             }
 
-            return View(user);
+            return View(new UserDetailsViewModel(user));
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeUserName([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, string newUserName)
         {
             if(user == null)
@@ -38,12 +38,32 @@ namespace TravelTracker.Controllers
 
             user.UserName = newUserName;
 
-            await _userManager.UpdateAsync(user);
+            var userViewModel = new UserDetailsViewModel(user);
 
-            return Redirect("~/" + newUserName);
+            if(!TryValidateModel(userViewModel.NewUserName))
+            {
+                return View(nameof(Index), userViewModel);
+            }
+
+            var identityResult = await _userManager.UpdateAsync(user);
+
+            if(identityResult.Succeeded)
+            {
+                return Redirect("~/" + newUserName);
+            }
+            else
+            {
+                foreach(var error in identityResult.Errors)
+                {
+                    ModelState.AddModelError("NewUserName.NewUserName", error.Description);
+                }
+
+                return View(nameof(Index), userViewModel);
+            }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeEmail([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, string newEmail)
         {
 			if (user == null)
@@ -53,28 +73,46 @@ namespace TravelTracker.Controllers
 
             user.Email = newEmail;
 
-            await _userManager.UpdateAsync(user);
+            var userViewModel = new UserDetailsViewModel(user);
 
-            return RedirectToAction(nameof(Index));
+            //Validation for correct email is in ViewModel, validation for email is not used already used is in UserManager
+            if(TryValidateModel(userViewModel.NewEmail))
+            {
+				var identityResult = await _userManager.UpdateAsync(user);
+
+				foreach (var error in identityResult.Errors)
+				{
+					ModelState.AddModelError("NewEmail.NewEmail", error.Description);
+				}
+            }
+
+            return View(nameof(Index), userViewModel);
         }
 
         [HttpPost]
-		public async Task<IActionResult> ChangePassword([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, 
-                                                        string currentPassword, string newPassword, string retypeNewPassword)
+        [ValidateAntiForgeryToken]
+		public async Task<IActionResult> ChangePassword([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, UserDetailsViewModel viewModel)
 		{
 			if (user == null)
 			{
 				return NotFound();
 			}
 
-            if(!newPassword.Equals(retypeNewPassword))
+            viewModel.UpdateFromIdentityUser(user);
+
+            if(!TryValidateModel(viewModel))
             {
-                return RedirectToAction(nameof(Index));
+                return View(nameof(Index), viewModel);
             }
 
-            await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            var identityResult = await _userManager.ChangePasswordAsync(user, viewModel.NewPassword.CurrentPassword, viewModel.NewPassword.NewPassword);
 
-			return RedirectToAction(nameof(Index));
+			foreach (var error in identityResult.Errors)
+			{
+                ModelState.AddModelError("NewPassword.PasswordError", error.Description);
+			}
+
+			return View(nameof(Index), viewModel);
 		}
     }
 }
