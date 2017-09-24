@@ -8,7 +8,24 @@ namespace TravelTracker.User
     [AttributeUsage(AttributeTargets.Property)]
     public class PasswordValidationAttribute : ValidationAttribute, IClientModelValidator
     {
-        readonly IdentityOptionsProvider identityOptionsProvider = new IdentityOptionsProvider();
+        readonly IIdentityOptionsProvider _identityOptionsProvider;
+
+        public PasswordValidationAttribute()
+        {
+            _identityOptionsProvider = new IdentityOptionsProvider();
+        }
+
+        public PasswordValidationAttribute(IIdentityOptionsProvider identityOptionsProvider)
+        {
+            _identityOptionsProvider = identityOptionsProvider;
+        }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+		{
+            //Attribute is only used for client side validation
+            //Server side validation is already implemented in UserManager
+            return ValidationResult.Success;
+		}
 
         public void AddValidation(ClientModelValidationContext context)
         {
@@ -19,15 +36,28 @@ namespace TravelTracker.User
 
 			MergeAttribute(context.Attributes, "data-val", "true");
 
-            MergeAttribute(context.Attributes, "data-val-require-digit", identityOptionsProvider.PasswordRequireDigit.ToString());
-            MergeAttribute(context.Attributes, "data-val-passwordlength", $"Password must be at least {identityOptionsProvider.PasswordRequiredLength} characters long");
-            MergeAttribute(context.Attributes, "data-val-passwordlength-length", identityOptionsProvider.PasswordRequiredLength.ToString());
-            MergeAttribute(context.Attributes, "data-val-require-non-alphanumeric", identityOptionsProvider.PasswordRequireNonAlphanumeric.ToString());
-            if(identityOptionsProvider.PasswordRequireUppercase)
+            if(_identityOptionsProvider.PasswordRequireDigit)
             {
-                MergeAttribute(context.Attributes, "data-val-uppercase", "Password must contain upper case characters");
+                MergeAttribute(context.Attributes, "data-val-digit", "Password must contain a digit");
             }
-            MergeAttribute(context.Attributes, "data-val-require-lower-case", identityOptionsProvider.PasswordRequireLowercase.ToString());
+
+            MergeAttribute(context.Attributes, "data-val-passwordlength", $"Password must be at least {_identityOptionsProvider.PasswordRequiredLength} characters long");
+            MergeAttribute(context.Attributes, "data-val-passwordlength-length", _identityOptionsProvider.PasswordRequiredLength.ToString());
+
+            if(_identityOptionsProvider.PasswordRequireNonAlphanumeric)
+            {
+				MergeAttribute(context.Attributes, "data-val-nonalphanumeric", "Password must contain a non alphanumeric character");
+            }
+           
+            if(_identityOptionsProvider.PasswordRequireUppercase)
+            {
+                MergeAttribute(context.Attributes, "data-val-uppercase", "Password must contain am upper case character");
+            }
+
+            if(_identityOptionsProvider.PasswordRequireLowercase)
+            {
+                MergeAttribute(context.Attributes, "data-val-lowercase", "Password must contain a lower case character");
+            }
         }
 
 		private bool MergeAttribute(IDictionary<string, string> attributes, string key, string value)

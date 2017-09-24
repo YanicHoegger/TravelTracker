@@ -7,27 +7,24 @@
 
         jQuery.validator.unobtrusive.adapters.add('email', [ ],
             function (options) {
-                options.rules['email'] = {};
+                options.rules['email'] = { };
                 options.messages['email'] = options.message;
             });
 
-        jQuery.validator.addMethod('require-digit',
+        jQuery.validator.addMethod('digit',
             function (value, element, params) {
-                if(params[0]) {
-                    return /\d/.test(value);
-                }
-                return true;
+                return /\d/.test(value);
             });
 
-        jQuery.validator.unobtrusive.adapters.add('require-digit', [ 'is-required' ],
+        jQuery.validator.unobtrusive.adapters.add('digit', [ ],
             function (options) {
-                options.rules['require-digit'] = [options.message];
-                options.messages['require-digit'] = 'Password requires a digit';
+                options.rules['digit'] = { };
+                options.messages['digit'] = options.message;
             });
 
         jQuery.validator.addMethod('passwordlength',
             function (value, element, params) {
-                return value.length >= params[0] ;
+                return value.length >= params[0];
             });
 
         jQuery.validator.unobtrusive.adapters.add('passwordlength', [ 'length' ],
@@ -36,16 +33,37 @@
                 options.messages['passwordlength'] = options.message;
             });
 
+        jQuery.validator.addMethod('nonalphanumeric',
+            function (value, element, params) {
+                return /[@#*!]/.test(value); //TODO: Correct regex for non alphanumeric characters
+            });
+
+        jQuery.validator.unobtrusive.adapters.add('nonalphanumeric', [ ],
+            function (options) {
+                options.rules['nonalphanumeric'] = { };
+                options.messages['nonalphanumeric'] = options.message;
+            });
+
         jQuery.validator.addMethod('uppercase',
             function (value, element, params) {
-                return /[A-Z]/.test(value) ;
+                return /[A-Z]/.test(value);
             });
 
         jQuery.validator.unobtrusive.adapters.add('uppercase', [ ],
             function (options) {
-                var length = parseInt(options.message);
                 options.rules['uppercase'] = { };
                 options.messages['uppercase'] = options.message;
+            });
+
+        jQuery.validator.addMethod('lowercase',
+            function (value, element, params) {
+                return /[a-z]/.test(value);
+            });
+
+        jQuery.validator.unobtrusive.adapters.add('lowercase', [ ],
+            function (options) {
+                options.rules['lowercase'] = { };
+                options.messages['lowercase'] = options.message;
             });
 
         //TODO: Validate that password and repassword are same      
