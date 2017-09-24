@@ -65,11 +65,11 @@ namespace TravelTracker.User
 		public string CurrentPassword { get; set; }
 
 		[Required]
-        [PasswordValidation]
+        [Password]
 		public string NewPassword { get; set; }
 
 		[Required]
-        [PasswordValidation]
+        [Password]
 		public string RetypeNewPassword { get; set; }
 
 		//Field only be used to show Errors that can either come from CurrentPassword or from NewPassword

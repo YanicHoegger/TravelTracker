@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace TravelTracker.User
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class PasswordValidationAttribute : ValidationAttribute, IClientModelValidator
+    public class PasswordAttribute : ValidationAttribute, IClientModelValidator
     {
         readonly IIdentityOptionsProvider _identityOptionsProvider;
 
-        public PasswordValidationAttribute()
+        public PasswordAttribute()
         {
             _identityOptionsProvider = new IdentityOptionsProvider();
         }
 
-        public PasswordValidationAttribute(IIdentityOptionsProvider identityOptionsProvider)
+        public PasswordAttribute(IIdentityOptionsProvider identityOptionsProvider)
         {
             _identityOptionsProvider = identityOptionsProvider;
         }

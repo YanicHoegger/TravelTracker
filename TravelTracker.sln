@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelTracker", "TravelTracker/TravelTracker.csproj", "{EA8CFEAA-8B26-4372-8F51-7037887170C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelTracker", "TravelTracker\TravelTracker.csproj", "{EA8CFEAA-8B26-4372-8F51-7037887170C3}"
 EndProject
-Project("{8B3D7CEE-382A-4702-9872-E262785D5505}") = "UnitTests", "UnitTests\UnitTests.csproj", "{5511EB6A-110B-48F3-A5A9-27F82A40879D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{5511EB6A-110B-48F3-A5A9-27F82A40879D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
