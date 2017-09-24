@@ -55,7 +55,7 @@ namespace TravelTracker.User
         }
 
         [Required]
-		[EmailValidation]
+        [EmailAddress(ErrorMessage = "This is not a valid e-mail address")]
 		public string NewEmail { get; set; }
     }
 

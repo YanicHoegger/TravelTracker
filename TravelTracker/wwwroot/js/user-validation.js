@@ -1,16 +1,4 @@
 ﻿$(function () {
-        jQuery.validator.addMethod('email',
-            function (value, element, params) {
-                var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return regex.test(value);
-            });
-
-        jQuery.validator.unobtrusive.adapters.add('email', [ ],
-            function (options) {
-                options.rules['email'] = { };
-                options.messages['email'] = options.message;
-            });
-
         jQuery.validator.addMethod('digit',
             function (value, element, params) {
                 return /\d/.test(value);
