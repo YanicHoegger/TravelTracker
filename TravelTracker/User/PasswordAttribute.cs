@@ -10,10 +10,7 @@ namespace TravelTracker.User
     {
         readonly IIdentityOptionsProvider _identityOptionsProvider;
 
-        public PasswordAttribute()
-        {
-            _identityOptionsProvider = new IdentityOptionsProvider();
-        }
+        public PasswordAttribute() : this(new IdentityOptionsProvider()) { }
 
         public PasswordAttribute(IIdentityOptionsProvider identityOptionsProvider)
         {
