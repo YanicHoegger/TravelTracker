@@ -41,6 +41,7 @@ namespace TravelTracker.User
             NewUserName = userName;
         }
 
+        //TODO: Every required field should have a specific ErrorMessage
         [Required]
         public string NewUserName { get; set; }
     }
