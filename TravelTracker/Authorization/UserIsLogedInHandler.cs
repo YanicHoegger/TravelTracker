@@ -30,7 +30,7 @@ namespace TravelTracker.Authorization
                 var userNameOfSignedInUser = context.User.FindFirst(ClaimTypes.Name).Value;
                 var userNameFromUrl = (string)authorizationFilterContext.RouteData.Values["username"];
 
-				if (userNameFromUrl.Equals(userNameOfSignedInUser, StringComparison.CurrentCultureIgnoreCase))
+				if (userNameOfSignedInUser.Equals(userNameFromUrl, StringComparison.CurrentCultureIgnoreCase))
 				{
                     context.Succeed(requirement);
 				}
