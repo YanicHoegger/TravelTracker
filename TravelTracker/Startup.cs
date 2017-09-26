@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TravelTracker.Authorization;
-using TravelTracker.Messages;
 using TravelTracker.User;
 
 namespace TravelTracker
@@ -48,8 +47,6 @@ namespace TravelTracker
             services.AddIdentity<IdentityUser, IdentityRole>(identityOptionsProvider.SetOptions)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
-
-            services.AddScoped<IMessageCollection, MessageCollection>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,22 +68,23 @@ namespace TravelTracker
 
             app.UseIdentity();
             app.UseStaticFiles();
-            
-            //TODO: AccountController only accessable when logged in
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    "Default",
-                    "{controller=Home}/{action=Index}/{id?}");
-            });
 
-            app.UseMvc(routes => 
-            {
-                routes.MapRoute(
-                    "Users",
-                    "{username}/{action?}",
-                    new { controller = "User", action = "Index", username = ""});
-            });
+			app.UseMvc(routes =>
+			{
+				routes.MapRoute(
+					"landing",
+					"",
+					new { controller = "Home", action = "Index" });
+                
+				routes.MapRoute(
+					"default",
+					"{controller}/{action}");
+                
+				routes.MapRoute(
+					"users",
+					"{*username}",
+					new { controller = "User", action = "Index" });
+			});
         }
     }
 }

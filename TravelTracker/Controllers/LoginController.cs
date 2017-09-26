@@ -17,30 +17,30 @@ namespace TravelTracker.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel viewModel)
-		{
-            if(!TryValidateModel(viewModel))
-            {
-                return Redirect("~/"); //TODO: Check the correct way to stay on the same page
-			}
+  //      [HttpPost]
+  //      public async Task<IActionResult> Login(LoginViewModel viewModel)
+		//{
+  //          if(!TryValidateModel(viewModel))
+  //          {
+  //              return Redirect("~/"); //TODO: Check the correct way to stay on the same page
+		//	}
 
-            var user = await _userManager.FindByEmailAsync(viewModel.Email);
-			if (user == null)
-			{
-				ModelState.AddModelError("Email", "Invalid login");
-                return Redirect("~/"); //TODO: Check the correct way to stay on the same page
-			}
+  //          var user = await _userManager.FindByEmailAsync(viewModel.Email);
+		//	if (user == null)
+		//	{
+		//		ModelState.AddModelError("Email", "Invalid login");
+  //              return Redirect("~/"); //TODO: Check the correct way to stay on the same page
+		//	}
 
-            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
-			if (!passwordSignInResult.Succeeded)
-			{
-				ModelState.AddModelError("Password", "Invalid login"); 
-				return Redirect("~/"); //TODO: Check the correct way to stay on the same page
-			}
+  //          var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
+		//	if (!passwordSignInResult.Succeeded)
+		//	{
+		//		ModelState.AddModelError("Password", "Invalid login"); 
+		//		return Redirect("~/"); //TODO: Check the correct way to stay on the same page
+		//	}
 
-			return Redirect("~/" + user.UserName);
-		}
+		//	return Redirect("~/" + user.UserName);
+		//}
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password, bool rememberMe)
