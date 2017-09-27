@@ -41,8 +41,7 @@ namespace TravelTracker.User
             NewUserName = userName;
         }
 
-        //TODO: Every required field should have a specific ErrorMessage
-        [Required]
+        [Required(ErrorMessage = "The New User Name field is required")]
         public string NewUserName { get; set; }
     }
 
@@ -55,7 +54,7 @@ namespace TravelTracker.User
             NewEmail = email;
         }
 
-        [Required]
+        [Required(ErrorMessage = "The New Email field is required")]
         [EmailAddress(ErrorMessage = "This is not a valid e-mail address")]
 		public string NewEmail { get; set; }
     }
@@ -65,11 +64,11 @@ namespace TravelTracker.User
         [Required(ErrorMessage = "The Current Password field is required")]
 		public string CurrentPassword { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "The New Password field is required")]
         [Password]
 		public string NewPassword { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "The Retype New Password field is required")]
         [Password]
 		public string RetypeNewPassword { get; set; }
 

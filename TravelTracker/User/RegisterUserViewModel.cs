@@ -10,14 +10,14 @@ namespace TravelTracker.User
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The User Name field is required")]
         public string UserName { get; set; }
 
         [Required]
         [Password]
         public string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Retype Password field is required")]
         [Password]
         public string RetypePassword { get; set; }
 
