@@ -23,9 +23,9 @@ namespace TravelTracker.User
         public void UpdateFromIdentityUser(IdentityUser identityUser)
         {
             UpdateFromIdentityUser(this, identityUser);
-        }   
+        }
 
-        private static void UpdateFromIdentityUser(UserDetailsViewModel model, IdentityUser identityUser)
+        static void UpdateFromIdentityUser(UserDetailsViewModel model, IdentityUser identityUser)
         {
             model.NewUserName = new NewUserNameViewModel(identityUser.UserName);
             model.NewEmail = new NewEmailViewModel(identityUser.Email);

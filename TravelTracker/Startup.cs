@@ -17,8 +17,8 @@ namespace TravelTracker
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -31,16 +31,16 @@ namespace TravelTracker
             // Add framework services.
             services.AddMvc();
 
-			services.AddAuthorization(options =>
-			{
-				options.AddPolicy("UserLogedIn",
-								  policy => policy.Requirements.Add(new UserIsLogedInRequirement()));
-			});
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserLogedIn",
+                                  policy => policy.Requirements.Add(new UserIsLogedInRequirement()));
+            });
 
-			services.AddSingleton<IAuthorizationHandler, UserIsLogedInHandler>();
-            
-            services.AddDbContext<IdentityDbContext>(options => 
-                options.UseSqlite("Data Source=users.sqlite", 
+            services.AddSingleton<IAuthorizationHandler, UserIsLogedInHandler>();
+
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseSqlite("Data Source=users.sqlite",
                     optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
 
             var identityOptionsProvider = new IdentityOptionsProvider();
@@ -69,22 +69,24 @@ namespace TravelTracker
             app.UseIdentity();
             app.UseStaticFiles();
 
-			app.UseMvc(routes =>
-			{
-				routes.MapRoute(
-					"landing",
-					"",
-					new { controller = "Home", action = "Index" });
-                
-				routes.MapRoute(
-					"default",
-					"{controller}/{action}");
-                
-				routes.MapRoute(
-					"users",
-					"{*username}",
-					new { controller = "User", action = "Index" });
-			});
+
+            //TODO: Unit Test for routing
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    "landing",
+                    "",
+                    new { controller = "Home", action = "Index" });
+
+                routes.MapRoute(
+                    "default",
+                    "{controller}/{action}");
+
+                routes.MapRoute(
+                    "users",
+                    "{*username}",
+                    new { controller = "User", action = "Index" });
+            });
         }
     }
 }

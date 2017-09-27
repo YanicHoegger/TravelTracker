@@ -20,9 +20,9 @@ namespace TravelTracker.TagHelpers
 			output.Content.SetHtmlContent(GetContent());
 		}
 
-		private string GetContent()
-		{
-			return $@"<dl class='pull-left dl-horizontal no-bottom-margin'>
+        string GetContent()
+        {
+            return $@"<dl class='pull-left dl-horizontal no-bottom-margin'>
                         <dt>
                             <h4 class='panel-title'>
                                 {Name}
@@ -36,6 +36,6 @@ namespace TravelTracker.TagHelpers
                         Edit
                     </a>
                     <div class='clearfix'></div>";
-		}
-	}
+        }
+    }
 }

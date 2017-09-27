@@ -9,7 +9,7 @@ namespace TravelTracker.User
 {
     public class UserBinder : IModelBinder
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        readonly UserManager<IdentityUser> _userManager;
 
         public UserBinder(UserManager<IdentityUser> userManager)
         {
@@ -18,16 +18,16 @@ namespace TravelTracker.User
 
         public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
-			if (bindingContext == null)
-			{
-				throw new ArgumentNullException(nameof(bindingContext));
-			}
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException(nameof(bindingContext));
+            }
 
             var userName = GetUserNameFromHttpContext(bindingContext.HttpContext);
 
             var user = await _userManager.FindByNameAsync(userName);
 
-            if(user == null)
+            if (user == null)
             {
                 return;
             }
@@ -35,7 +35,7 @@ namespace TravelTracker.User
             bindingContext.Result = ModelBindingResult.Success(user);
         }
 
-        private string GetUserNameFromHttpContext(HttpContext httpContext)
+        string GetUserNameFromHttpContext(HttpContext httpContext)
         {
             var path = httpContext.Request.Path.Value;
 

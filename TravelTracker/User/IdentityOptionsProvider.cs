@@ -4,9 +4,9 @@ namespace TravelTracker.User
 {
     public class IdentityOptionsProvider : IIdentityOptionsProvider
     {
-		readonly bool _passwordRequireDigit = false;
+		readonly bool _passwordRequireDigit;
 		readonly int _passwordRequiredLength = 6;
-		readonly bool _passwordRequireNonAlphanumeric = false;
+		readonly bool _passwordRequireNonAlphanumeric;
 		readonly bool _passwordRequireUppercase = true;
 		readonly bool _passwordRequireLowercase = true;
 		readonly bool _RequireDigitUniqueEmail = true;
