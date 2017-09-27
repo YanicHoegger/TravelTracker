@@ -26,9 +26,12 @@ namespace TravelTracker.User
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if(!Password.Equals(RetypePassword))
+            if(Password != null)
             {
-                yield return new ValidationResult("Passwords don't match");
+				if (!Password.Equals(RetypePassword))
+				{
+					yield return new ValidationResult("Passwords don't match");
+				}
             }
         }
     }

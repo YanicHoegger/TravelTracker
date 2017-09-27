@@ -77,10 +77,13 @@ namespace TravelTracker.User
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
-			if (!NewPassword.Equals(RetypeNewPassword))
-			{
-				yield return new ValidationResult("Passwords don't match", new[] { "NewPassword", "RetypeNewPassword" });
-			}
+            if(NewPassword != null)
+            {
+				if (!NewPassword.Equals(RetypeNewPassword))
+				{
+					yield return new ValidationResult("Passwords don't match", new[] { "NewPassword", "RetypeNewPassword" });
+				}
+            }
 		}
     }
 }
