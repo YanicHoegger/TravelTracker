@@ -1,8 +1,11 @@
 ﻿@using TravelTracker.User
 @model RegisterUserViewModel
+
 @{
     ViewData["Title"] = "Register new accounts";
 }
+
+<!--TODO: bootstrap class for content-->
 
 <form method="POST" asp-controller="Account" asp-action="Register">
     <span asp-validation-for="ErrorMessage" class="text-danger"></span>
