@@ -1,0 +1,14 @@
+﻿@using TravelTracker.User
+@model DisplayAllViewModel
+
+
+@{
+    ViewData["Title"] = "All Accounts";
+}
+
+<ul>
+	@foreach(var user in Model.Users)
+	{
+	<li>@user.UserName</li>
+	}
+</ul>

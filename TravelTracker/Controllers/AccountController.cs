@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -54,5 +55,19 @@ namespace TravelTracker.Controllers
 
             return Content("Registering user successful");
         }
-    }
+
+        public IActionResult DisplayAll()
+        {
+            var viewModel = new DisplayAllViewModel();
+            viewModel.Users = _userManager.Users.Select(CreateUserViewModel);
+            return View(viewModel);
+        }
+
+        private UserViewModel CreateUserViewModel(IdentityUser user)
+        {
+            var viewModel = new UserViewModel();
+            viewModel.UserName = user.UserName;
+            return viewModel;
+        }
+	}
 }
