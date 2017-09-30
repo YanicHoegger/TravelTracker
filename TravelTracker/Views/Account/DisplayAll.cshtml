@@ -6,9 +6,16 @@
     ViewData["Title"] = "All Accounts";
 }
 
-<ul>
+<ul class="list-group media-list">
 	@foreach(var user in Model.Users)
 	{
-	<li>@user.UserName</li>
+	<li class="list-group-item">
+		<div>
+	        <p>@user.UserName</p>
+			<a href="/@user.UserName">Edit</a>
+            <br/>
+			<a asp-controller="Account" asp-action="Delete">Delete</a>
+		</div>
+	</li>
 	}
 </ul>

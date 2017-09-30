@@ -59,15 +59,30 @@ namespace TravelTracker.Controllers
         public IActionResult DisplayAll()
         {
             var viewModel = new DisplayAllViewModel();
+
             viewModel.Users = _userManager.Users.Select(CreateUserViewModel);
+
             return View(viewModel);
         }
 
-        private UserViewModel CreateUserViewModel(IdentityUser user)
+        UserViewModel CreateUserViewModel(IdentityUser user)
         {
             var viewModel = new UserViewModel();
+
             viewModel.UserName = user.UserName;
+
             return viewModel;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            await _userManager.DeleteAsync(user);
+
+            return Redirect(nameof(DisplayAll));
         }
 	}
 }
