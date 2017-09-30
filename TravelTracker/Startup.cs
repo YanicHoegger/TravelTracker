@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TravelTracker.Authorization;
-using TravelTracker.Messages;
 using TravelTracker.User;
 
 namespace TravelTracker
@@ -18,8 +17,8 @@ namespace TravelTracker
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -32,24 +31,22 @@ namespace TravelTracker
             // Add framework services.
             services.AddMvc();
 
-			services.AddAuthorization(options =>
-			{
-				options.AddPolicy("UserLogedIn",
-								  policy => policy.Requirements.Add(new UserIsLogedInRequirement()));
-			});
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("UserLogedIn",
+                                  policy => policy.Requirements.Add(new UserIsLogedInRequirement()));
+            });
 
-			services.AddSingleton<IAuthorizationHandler, UserIsLogedInHandler>();
-            
-            services.AddDbContext<IdentityDbContext>(options => 
-                options.UseSqlite("Data Source=users.sqlite", 
+            services.AddSingleton<IAuthorizationHandler, UserIsLogedInHandler>();
+
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseSqlite("Data Source=users.sqlite",
                     optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
 
             var identityOptionsProvider = new IdentityOptionsProvider();
             services.AddIdentity<IdentityUser, IdentityRole>(identityOptionsProvider.SetOptions)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
-
-            services.AddScoped<IMessageCollection, MessageCollection>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,21 +68,24 @@ namespace TravelTracker
 
             app.UseIdentity();
             app.UseStaticFiles();
-            
-            //TODO: AccountController only accessable when logged in
+
+
+            //TODO: Unit Test for routing
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    "Default",
-                    "{controller=Home}/{action=Index}/{id?}");
-            });
+                    "landing",
+                    "",
+                    new { controller = "Home", action = "Index" });
 
-            app.UseMvc(routes => 
-            {
                 routes.MapRoute(
-                    "Users",
-                    "{username}/{action?}",
-                    new { controller = "User", action = "Index", username = ""});
+                    "default",
+                    "{controller}/{action}");
+
+                routes.MapRoute(
+                    "users",
+                    "{*username}",
+                    new { controller = "User", action = "Index" });
             });
         }
     }

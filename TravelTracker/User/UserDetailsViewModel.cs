@@ -23,9 +23,9 @@ namespace TravelTracker.User
         public void UpdateFromIdentityUser(IdentityUser identityUser)
         {
             UpdateFromIdentityUser(this, identityUser);
-        }   
+        }
 
-        private static void UpdateFromIdentityUser(UserDetailsViewModel model, IdentityUser identityUser)
+        static void UpdateFromIdentityUser(UserDetailsViewModel model, IdentityUser identityUser)
         {
             model.NewUserName = new NewUserNameViewModel(identityUser.UserName);
             model.NewEmail = new NewEmailViewModel(identityUser.Email);
@@ -41,7 +41,7 @@ namespace TravelTracker.User
             NewUserName = userName;
         }
 
-        [Required]
+        [Required(ErrorMessage = "The New User Name field is required")]
         public string NewUserName { get; set; }
     }
 
@@ -54,7 +54,7 @@ namespace TravelTracker.User
             NewEmail = email;
         }
 
-        [Required]
+        [Required(ErrorMessage = "The New Email field is required")]
         [EmailAddress(ErrorMessage = "This is not a valid e-mail address")]
 		public string NewEmail { get; set; }
     }
@@ -64,11 +64,11 @@ namespace TravelTracker.User
         [Required(ErrorMessage = "The Current Password field is required")]
 		public string CurrentPassword { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "The New Password field is required")]
         [Password]
 		public string NewPassword { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = "The Retype New Password field is required")]
         [Password]
 		public string RetypeNewPassword { get; set; }
 
@@ -77,10 +77,13 @@ namespace TravelTracker.User
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
-			if (!NewPassword.Equals(RetypeNewPassword))
-			{
-				yield return new ValidationResult("Passwords don't match", new[] { "NewPassword", "RetypeNewPassword" });
-			}
+            if(NewPassword != null)
+            {
+				if (!NewPassword.Equals(RetypeNewPassword))
+				{
+					yield return new ValidationResult("Passwords don't match", new[] { "NewPassword", "RetypeNewPassword" });
+				}
+            }
 		}
     }
 }

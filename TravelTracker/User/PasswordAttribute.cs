@@ -10,10 +10,7 @@ namespace TravelTracker.User
     {
         readonly IIdentityOptionsProvider _identityOptionsProvider;
 
-        public PasswordAttribute()
-        {
-            _identityOptionsProvider = new IdentityOptionsProvider();
-        }
+        public PasswordAttribute() : this(new IdentityOptionsProvider()) { }
 
         public PasswordAttribute(IIdentityOptionsProvider identityOptionsProvider)
         {
@@ -60,15 +57,15 @@ namespace TravelTracker.User
             }
         }
 
-		private bool MergeAttribute(IDictionary<string, string> attributes, string key, string value)
-		{
-			if (attributes.ContainsKey(key))
-			{
-				return false;
-			}
+        bool MergeAttribute(IDictionary<string, string> attributes, string key, string value)
+        {
+            if (attributes.ContainsKey(key))
+            {
+                return false;
+            }
 
-			attributes.Add(key, value);
-			return true;
-		}
+            attributes.Add(key, value);
+            return true;
+        }
     }
 }

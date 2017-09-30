@@ -1,36 +1,42 @@
-﻿@using TravelTracker.Messages
-@inject IMessageCollection MessageCollection
+﻿@using TravelTracker.User
+@model RegisterUserViewModel
+
 @{
     ViewData["Title"] = "Register new accounts";
 }
 
-<form method="POST">
+<!--TODO: bootstrap class for content-->
+
+<form method="POST" asp-controller="Account" asp-action="Register">
+    <span asp-validation-for="ErrorMessage" class="text-danger"></span>
+	
     <div class="form-group">
         <label >Email</label>
-        <input type="email" name="email" class="form-control"/>
+        <input asp-for="Email" class="form-control"/>
+		<span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
 	<div class="form-group">
         <label >User Name</label>
-        <input type="text" name="userName" class="form-control"/>
+        <input asp-for="UserName" class="form-control"/>
+		<span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label>Password</label>
-        <input type="password" name="password" class="form-control"/>
+        <input asp-for="Password" type="password" class="form-control"/>
+		<span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label>Retype Password</label>
-        <input type="password" name="repassword" class="form-control"/>
+        <input asp-for="RetypePassword" type="password" class="form-control"/>
+		<span asp-validation-for="RetypePassword" class="text-danger"></span>
     </div>
 
     <input type="submit" class="btn btn-primary"/>
 </form>
 
-<ul> 
-    @foreach(var message in MessageCollection.Messages)
-	{
-	    <li>@message.Message</li>
-	}
-</ul>
+@section Scripts{
+    <script src="~/js/user-validation.js"></script>
+}
