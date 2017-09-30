@@ -58,11 +58,7 @@ namespace TravelTracker.Controllers
 
         public IActionResult DisplayAll()
         {
-            var viewModel = new DisplayAllViewModel();
-
-            viewModel.Users = _userManager.Users.Select(CreateUserViewModel);
-
-            return View(viewModel);
+            return View(_userManager.Users.Select(CreateUserViewModel));
         }
 
         UserViewModel CreateUserViewModel(IdentityUser user)
