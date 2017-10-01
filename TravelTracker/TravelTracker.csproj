@@ -25,5 +25,8 @@
     <Folder Include="Authorization\" />
     <Folder Include="ViewComponents\" />
     <Folder Include="Views\Shared\Components\" />
+    <Folder Include="wwwroot\css\home\" />
+    <Folder Include="wwwroot\css\user\" />
+    <Folder Include="wwwroot\css\account\" />
   </ItemGroup>
 </Project>

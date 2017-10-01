@@ -7,16 +7,7 @@
 }
 
 @section Stylesheets{
-    <style>
-	    .content-divider {
-	        border-right: 1px solid #337ab7;
-	    }
-
-	    .btn-no-padding-and-border {
-	        padding: 0px;
-	        border: 0px;
-	    }
-    </style>
+    <link rel="stylesheet" href="~/css/account/displayAll.css" />
 }
 
 @if (Model.Any())
@@ -27,7 +18,7 @@
 	<li class="list-group-item">
 		<div class="row">
 			<div class="col-sm-9">
-	            <p class="no-bottom-margin" style="margin-bottom: 0px;">@user.UserName</p>
+	            <p class="no-bottom-margin">@user.UserName</p>
 			</div>
 			<div class="col-sm-3">
 				<div class="row">
