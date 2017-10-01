@@ -1,7 +1,7 @@
 ﻿@using TravelTracker.User
 @model LoginViewModel
 
-<form class="navbar-form navbar-right" role="search" asp-controller="Login" asp-action="Login">
+<form id="LoginForm" class="navbar-form navbar-right" role="search">
     <span asp-validation-for="Password" class="text-danger"></span>
     <div class="form-group">
         <input type="text" class="form-control" asp-for="Email" placeholder="Email">

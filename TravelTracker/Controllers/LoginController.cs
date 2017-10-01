@@ -17,58 +17,41 @@ namespace TravelTracker.Controllers
             _signInManager = signInManager;
         }
 
-  //      [HttpPost]
-  //      public async Task<IActionResult> Login(LoginViewModel viewModel)
-		//{
-  //          if(!TryValidateModel(viewModel))
-  //          {
-  //              return Redirect("~/"); //TODO: Check the correct way to stay on the same page
-		//	}
-
-  //          var user = await _userManager.FindByEmailAsync(viewModel.Email);
-		//	if (user == null)
-		//	{
-		//		ModelState.AddModelError("Email", "Invalid login");
-  //              return Redirect("~/"); //TODO: Check the correct way to stay on the same page
-		//	}
-
-  //          var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
-		//	if (!passwordSignInResult.Succeeded)
-		//	{
-		//		ModelState.AddModelError("Password", "Invalid login"); 
-		//		return Redirect("~/"); //TODO: Check the correct way to stay on the same page
-		//	}
-
-		//	return Redirect("~/" + user.UserName);
-		//}
-
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password, bool rememberMe)
-        {
-            var user = await _userManager.FindByEmailAsync(email ?? ""); //TODO: Is there a better way, so the arguments would come as empty strings instead of null???
-            if (user == null)
+        public async Task<IActionResult> Login(LoginViewModel viewModel)
+		{
+            if(!TryValidateModel(viewModel))
             {
-                ModelState.AddModelError(string.Empty, "Invalid login");
-                //return View();
-                return Redirect("~/");
-            }
+                return ViewComponent("LoginStatus", viewModel);
+			}
 
-            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, password ?? "", rememberMe, false);
-            if (!passwordSignInResult.Succeeded)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid login");
-                //return View();  
-                return Redirect("~/");
-            }
+            var user = await _userManager.FindByEmailAsync(viewModel.Email);
+			if (user == null)
+			{
+				ModelState.AddModelError("Password", "Invalid login");
+                return ViewComponent("LoginStatus", viewModel);
+			}
 
-            return Redirect("~/" + user.UserName);
-        }
+            var passwordSignInResult = await _signInManager.PasswordSignInAsync(user, viewModel.Password, viewModel.RememberMe, false);
+			if (!passwordSignInResult.Succeeded)
+			{
+				ModelState.AddModelError("Password", "Invalid login"); 
+                return ViewComponent("LoginStatus", viewModel);
+			}
+
+            //return Content($"Redirect {HttpContext.Request.Scheme}://{HttpContext.Request.Host}/{user.UserName}");
+            return Content($"Redirect http://{HttpContext.Request.Host}/{user.UserName}");
+		}
 
 		[HttpPost]
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
-			return Redirect("~/"); //TODO: Check the correct way to stay on the same page
+
+			//TODO: At the moment the landing page is the only page a user hasn't to be logedin,
+            //but as soon there are other pages a user doesn't has to be logedin,
+            //the user should stay on those pages
+			return Redirect("~/"); 
 		}
     }
 }
