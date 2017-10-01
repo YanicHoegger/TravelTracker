@@ -1,0 +1,45 @@
+﻿@using TravelTracker.User
+@model IEnumerable<UserViewModel>
+
+
+@{
+    ViewData["Title"] = "All Accounts";
+}
+
+@section Stylesheets{
+    <style>
+	    .content-divider {
+	        border-right: 1px solid #337ab7;
+	    }
+
+	    .btn-no-padding-and-border {
+	        padding: 0px;
+	        border: 0px;
+	    }
+    </style>
+}
+
+@if (Model.Any())
+{
+<ul class="list-group media-list">
+	@foreach(var user in Model)
+	{
+	<li class="list-group-item">
+		<div class="row">
+			<div class="col-sm-9">
+	            <p class="no-bottom-margin" style="margin-bottom: 0px;">@user.UserName</p>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+		            <a href="/@user.UserName" class="col-sm-6 text-right content-divider">Edit</a>
+					<form asp-controller="Account" asp-action="DeleteUser" method="post" class="col-sm-6">
+						<input type="hidden" name="username" value="@user.UserName">
+                        <input type="submit" class="btn-link btn-no-padding-and-border" value="Delete"/>
+					</form>
+				</div>
+			</div>
+		</div>
+	</li>
+	}
+</ul>
+}

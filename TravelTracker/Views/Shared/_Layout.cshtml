@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Identity.EntityFrameworkCore
 @inject SignInManager<IdentityUser> SignInManager
+	
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,36 +30,19 @@
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Travel Tracker</a>
+                <a asp-controller="Home" asp-action="Index" class="navbar-brand">Travel Tracker</a>
             </div>
             <div class="navbar-collapse collapse">
-                @{
-                    if (!SignInManager.IsSignedIn(Context.User))
-                    {
-                        <form class="navbar-form navbar-right" role="search" asp-controller="Login" asp-action="Login">
-							<!--<span asp-validation-for="Password" class="text-danger"></span>-->
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="email" placeholder="Email">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" name="password" placeholder="Password">
-                            </div>
-                            <button type="submit" class="btn btn-default">Sign In</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form class="navbar-form navbar-right" role="search" asp-controller="Login" asp-action="Logout">
-                            <button type="submit" class="btn btn-default">Log out</button>
-                        </form>
-                    }
-                }
+				<div id="LoginStatus">
+				    @await Component.InvokeAsync("LoginStatus")
+				</div>        
             </div>
         </div>
     </nav>
     <div class="container body-content">
         @RenderBody()
         <hr/>
+				<!--TODO: Footer schould only stay at the buttom of the page when content is smaller-->
         <footer class="footer">
 		    <div class="footer-container">
 				<p class="text-muted">&copy; 2017 - Yanic Högger</p>
@@ -100,6 +84,8 @@
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
     </environment>
+
+	<script src="~/js/login-reload.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

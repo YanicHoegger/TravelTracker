@@ -23,5 +23,7 @@
     <Folder Include="Views\User\" />
     <Folder Include="TagHelpers\" />
     <Folder Include="Authorization\" />
+    <Folder Include="ViewComponents\" />
+    <Folder Include="Views\Shared\Components\" />
   </ItemGroup>
 </Project>
