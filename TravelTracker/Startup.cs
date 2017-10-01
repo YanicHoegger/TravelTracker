@@ -71,7 +71,6 @@ namespace TravelTracker
 
 
             //TODO: Unit Test for routing
-            //TODO: When url doesn't match some kind of access denied get shown
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
