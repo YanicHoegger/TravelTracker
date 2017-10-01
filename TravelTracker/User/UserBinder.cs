@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -23,7 +22,7 @@ namespace TravelTracker.User
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var userName = GetUserNameFromHttpContext(bindingContext.HttpContext);
+            var userName = (string)bindingContext.ActionContext.RouteData.Values["username"];
 
             var user = await _userManager.FindByNameAsync(userName);
 
@@ -33,14 +32,6 @@ namespace TravelTracker.User
             }
 
             bindingContext.Result = ModelBindingResult.Success(user);
-        }
-
-        string GetUserNameFromHttpContext(HttpContext httpContext)
-        {
-            var path = httpContext.Request.Path.Value;
-
-            //pattern is '/{username}/{maybeSomethingElse}'
-            return path.Split('/')[1];
         }
     }
 }

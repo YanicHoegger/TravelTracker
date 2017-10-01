@@ -79,14 +79,14 @@ namespace TravelTracker
                     "",
                     new { controller = "Home", action = "Index" });
 
+				routes.MapRoute(
+					"users",
+                    "{username}/{action?}",
+					new { controller = "User", action = "Index" });
+
                 routes.MapRoute(
                     "default",
                     "{controller}/{action}");
-
-                routes.MapRoute(
-                    "users",
-                    "{*username}",
-                    new { controller = "User", action = "Index" });
             });
         }
     }
