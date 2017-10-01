@@ -52,3 +52,8 @@ textarea {
 .footer-container .text-muted {
     margin: 20px 0;
 }
+
+/*TODO: Check if bootsrtap offers same effect*/
+.no-bottom-margin {
+    margin-bottom: 0px;
+}
