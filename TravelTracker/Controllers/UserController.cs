@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -31,27 +30,27 @@ namespace TravelTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeUserName([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, string newUserName)
+        public async Task<IActionResult> ChangeUserName([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, UserDetailsViewModel viewModel)
         {
             if (user == null)
             {
                 return NotFound();
             }
 
-            user.UserName = newUserName;
+            user.UserName = viewModel.NewUserName.NewUserName;
 
-            var userViewModel = new UserDetailsViewModel(user);
+            viewModel.UpdateFromIdentityUser(user);
 
-            if (!TryValidateModel(userViewModel.NewUserName))
+            if (!TryValidateModel(viewModel.NewUserName))
             {
-                return View(nameof(Index), userViewModel);
+                return View(nameof(Index), viewModel);
             }
 
             var identityResult = await _userManager.UpdateAsync(user);
 
             if (identityResult.Succeeded)
             {
-                return Redirect("~/" + newUserName);
+                return Redirect("~/" + user.UserName);
             }
 
             foreach (var error in identityResult.Errors)
@@ -59,24 +58,24 @@ namespace TravelTracker.Controllers
                 ModelState.AddModelError("NewUserName.NewUserName", error.Description);
             }
 
-            return View(nameof(Index), userViewModel);
+            return View(nameof(Index), viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeEmail([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, string newEmail)
+        public async Task<IActionResult> ChangeEmail([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, UserDetailsViewModel viewModel)
         {
             if (user == null)
             {
                 return NotFound();
             }
 
-            user.Email = newEmail;
+            user.Email = viewModel.NewEmail.NewEmail;
 
-            var userViewModel = new UserDetailsViewModel(user);
+            viewModel.UpdateFromIdentityUser(user);
 
-            //Validation for correct email is in ViewModel, validation for email is not used already used is in UserManager
-            if (TryValidateModel(userViewModel.NewEmail))
+            //Validation for correct email is in ViewModel, validation for 'email is not used already' is in UserManager
+            if (TryValidateModel(viewModel.NewEmail))
             {
                 var identityResult = await _userManager.UpdateAsync(user);
 
@@ -86,7 +85,7 @@ namespace TravelTracker.Controllers
                 }
             }
 
-            return View(nameof(Index), userViewModel);
+            return View(nameof(Index), viewModel);
         }
 
         [HttpPost]
