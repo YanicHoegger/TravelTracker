@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using TravelTracker.User;
 
 namespace TravelTracker.Controllers
@@ -20,7 +23,7 @@ namespace TravelTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
 		{
-            if(!TryValidateModel(viewModel))
+			if(!TryValidateModel(viewModel))
             {
                 return ViewComponent("LoginStatus", viewModel);
 			}
@@ -39,8 +42,8 @@ namespace TravelTracker.Controllers
                 return ViewComponent("LoginStatus", viewModel);
 			}
 
-            //return Content($"Redirect {HttpContext.Request.Scheme}://{HttpContext.Request.Host}/{user.UserName}");
-            return Content($"Redirect http://{HttpContext.Request.Host}/{user.UserName}");
+            var userUrlLink = Url.Link("users", new { username = user.UserName, action = "" });
+            return Content($"Redirect {userUrlLink}");
 		}
 
 		[HttpPost]
