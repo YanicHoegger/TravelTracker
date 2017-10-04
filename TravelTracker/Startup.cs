@@ -39,15 +39,19 @@ namespace TravelTracker
 
             services.AddSingleton<IAuthorizationHandler, UserIsLogedInHandler>();
 
-            services.AddDbContext<IdentityDbContext>(options =>
-                options.UseSqlite("Data Source=users.sqlite",
-                    optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
+            SetUpDataBase(services);
 
             var identityOptionsProvider = new IdentityOptionsProvider();
             services.AddIdentity<IdentityUser, IdentityRole>(identityOptionsProvider.SetOptions)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
         }
+
+        protected virtual void SetUpDataBase(IServiceCollection services)
+        {
+			services.AddDbContext<IdentityDbContext>(options => options.UseSqlite("Data Source=users.sqlite",
+					optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityDbContext dbContext)
@@ -73,19 +77,14 @@ namespace TravelTracker
             //TODO: Unit Test for routing
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    "landing",
-                    "",
-                    new { controller = "Home", action = "Index" });
-
 				routes.MapRoute(
 					"users",
-                    "{username}/{action?}",
+                    "traveller/{username}/{action?}",
 					new { controller = "User", action = "Index" });
 
                 routes.MapRoute(
                     "default",
-                    "{controller}/{action}");
+                    "{controller=Home}/{action=Index}");
             });
         }
     }
