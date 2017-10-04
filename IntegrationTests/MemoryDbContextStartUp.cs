@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
+using TravelTracker;
 
-namespace TravelTracker
+namespace IntegrationTests
 {
     public class MemoryDbContextStartUp : Startup
     {
@@ -13,10 +17,16 @@ namespace TravelTracker
         {
         }
 
-        protected sealed override void SetDbContext(DbContextOptionsBuilder options)
-        {
-            options.UseMemoryCache(new MemoryCache());
-        }
+        protected override void SetUpDataBase(IServiceCollection services)
+		{
+			var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
+			var connectionString = connectionStringBuilder.ToString();
+			var connection = new SqliteConnection(connectionString);
+			services
+			  .AddDbContext<IdentityDbContext>(
+				options => options.UseSqlite(connection)
+			  );
+		}
     }
 
     public class MemoryCache : IMemoryCache
