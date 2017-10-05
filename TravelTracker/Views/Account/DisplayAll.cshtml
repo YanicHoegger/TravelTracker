@@ -22,7 +22,7 @@
 			</div>
 			<div class="col-sm-3">
 				<div class="row">
-		            <a href="/@user.UserName" class="col-sm-6 text-right content-divider">Edit</a>
+		            <a href="@user.RouteUrl" class="col-sm-6 text-right content-divider">Edit</a>
 					<form asp-controller="Account" asp-action="DeleteUser" method="post" class="col-sm-6">
 						<input type="hidden" name="username" value="@user.UserName">
                         <input type="submit" class="btn-link btn-no-padding-and-border" value="Delete"/>

@@ -63,11 +63,10 @@ namespace TravelTracker.Controllers
 
         UserViewModel CreateUserViewModel(IdentityUser user)
         {
-            var viewModel = new UserViewModel();
-
-            viewModel.UserName = user.UserName;
-
-            return viewModel;
+            return new UserViewModel(Url)
+            {
+                UserName = user.UserName
+            };
         }
 
         [HttpPost]

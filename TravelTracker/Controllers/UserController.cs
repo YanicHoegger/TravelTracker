@@ -8,6 +8,7 @@ using TravelTracker.User;
 namespace TravelTracker.Controllers
 {
     //TODO: Instead of Access Denied Page, 'localhost redirected you too many times' comes
+    //TODO: Authorize Admin
     [Authorize(Policy = "UserLogedIn")]
     public class UserController : Controller
     {
