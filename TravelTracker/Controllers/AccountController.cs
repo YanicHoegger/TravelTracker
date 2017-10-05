@@ -63,9 +63,10 @@ namespace TravelTracker.Controllers
 
         UserViewModel CreateUserViewModel(IdentityUser user)
         {
-            return new UserViewModel(Url)
+            return new UserViewModel()
             {
-                UserName = user.UserName
+                UserName = user.UserName,
+                RouteUrl = Url.RouteUrl("users", new { username = user.UserName, action = "" })
             };
         }
 
