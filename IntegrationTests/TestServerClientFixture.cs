@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.TestHost;
 
 namespace IntegrationTests
 {
-    public class TestServerClient<TStartup> where TStartup : class
+    public class TestServerClientFixture<TStartup> : IDisposable where TStartup : class
     {
-        public TestServerClient()
+        public TestServerClientFixture()
         {
             //TODO: Find a way to resolve path right
 			var builder = new WebHostBuilder()
@@ -22,5 +22,11 @@ namespace IntegrationTests
         public TestServer Server { get; private set; }
 
         public HttpClient Client { get; private set; }
+
+        public void Dispose()
+        {
+            Server.Dispose();
+            Client.Dispose();
+        }
     }
 }

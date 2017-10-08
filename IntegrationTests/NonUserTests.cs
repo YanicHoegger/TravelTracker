@@ -6,7 +6,7 @@ using Xunit;
 
 namespace IntegrationTests
 {
-    public class HomeControllerTest
+    public class HomeControllerTest : MemoryDbTestBase
     {
         [Theory]
         [InlineData("/")]
@@ -14,7 +14,6 @@ namespace IntegrationTests
         [InlineData("/Home/Error")]
         public async Task VisitSiteSuccessful(string site)
         {
-            GivenServerAndClient();
             await WhenVisitSite(site);
             ThenSuccess();
         }
@@ -24,22 +23,19 @@ namespace IntegrationTests
 		[InlineData("/Account/DisplayAll")]
         public async Task VisitSiteThenAccessDenied(string site)
         {
-			GivenServerAndClient();
 			await WhenVisitSite(site);
             ThenAccessDenied();
         }
 
-        TestServerClient<MemoryDbContextStartUp> ServerClient;
         HttpResponseMessage Response;
 
-        void GivenServerAndClient()
+        public HomeControllerTest(TestServerClientFixture<MemoryDbContextStartUp> testServerClient) : base(testServerClient)
         {
-            ServerClient = new TestServerClient<MemoryDbContextStartUp>();
         }
 
         async Task WhenVisitSite(string site)
         {
-            Response = await ServerClient.Client.GetAsync(site);
+            Response = await Client.GetAsync(site);
         }
 
         void ThenSuccess()
