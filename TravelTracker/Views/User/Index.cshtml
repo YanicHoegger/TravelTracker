@@ -16,7 +16,11 @@
 <div class="panel-group" id="accordion">
   <div class="panel panel-default">
     <userdetails name="Username" value="@Model.NewUserName.NewUserName" content-href="#collapse1"></userdetails>
-    <div id="collapse1" class="panel-collapse collapse @(ViewData.ModelState.IsFieldInvalid("NewUserName.NewUserName") ? "in" : "")">
+    <div id="collapse1" class="panel-collapse collapse">
+      @if(ViewData.ModelState.IsFieldInvalid("NewUserName.NewUserName"))
+      {
+        <div id="NewUserNameInvalid"></div>
+      }
       <div class="panel-body">
 		<form method="POST" asp-controller="User" asp-action="ChangeUserName">
             <div class="form-group">
@@ -25,13 +29,18 @@
 				<span asp-validation-for="NewUserName.NewUserName" class="text-danger"></span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
+			<a class="btn" asp-controller="User" asp-action="Index">Cancel</a>
         </form>
 	  </div>
     </div>
   </div>
   <div class="panel panel-default">
     <userdetails name="Email" value="@Model.NewEmail.NewEmail" content-href="#collapse2"></userdetails>
-    <div id="collapse2" class="panel-collapse collapse @(ViewData.ModelState.IsFieldInvalid("NewEmail.NewEmail") ? "in" : "")">
+    <div id="collapse2" class="panel-collapse collapse">
+      @if(ViewData.ModelState.IsFieldInvalid("NewEmail.NewEmail"))
+      {
+        <div id="NewEmailInvalid"></div>
+      }
       <div class="panel-body">
         <form method="POST" asp-controller="User" asp-action="ChangeEmail">
             <div class="form-group">
@@ -40,13 +49,18 @@
 				<span asp-validation-for="NewEmail.NewEmail" class="text-danger"></span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
+		    <a class="btn" asp-controller="User" asp-action="Index">Cancel</a>
         </form>
       </div>
     </div>
   </div>
   <div class="panel panel-default">
     <userdetails name="Password" value="" content-href="#collapse3"></userdetails>
-    <div id="collapse3" class="panel-collapse collapse @(ViewData.ModelState.IsAFieldInvalid("NewPassword.CurrentPassword", "NewPassword.NewPassword", "NewPassword.RetypeNewPassword", "NewPassword.PasswordError") ? "in" : "")">
+    <div id="collapse3" class="panel-collapse collapse">
+      @if(ViewData.ModelState.IsAFieldInvalid("NewPassword.CurrentPassword", "NewPassword.NewPassword", "NewPassword.RetypeNewPassword", "NewPassword.PasswordError"))
+      {
+        <div id="NewPasswordInvalid"></div>
+      }
 	    <div class="panel-body">	
             <form method="POST" asp-controller="User" asp-action="ChangePassword">
 				<span asp-validation-for="NewPassword.PasswordError" class="text-danger"></span>
@@ -65,16 +79,15 @@
                     <input asp-for="NewPassword.RetypeNewPassword" type="password" class="form-control"/>
 					<span asp-validation-for="NewPassword.RetypeNewPassword" class="text-danger"></span>
                 </div>					
-                <input type="submit" value="Save" class="btn btn-primary"/>				
-            </form>		    
+                <input type="submit" value="Save" class="btn btn-primary"/>
+				<a class="btn" asp-controller="User" asp-action="Index">Cancel</a>
+            </form>	
+				
 	    </div>
     </div>
   </div>
 </div>
 
-<!-- TODO: Lock edit buttons when input is made-->
-<!-- TODO: Cancle Buttons when input is mace-->
-<!-- TODO: When error, collapse is open but edit button is still shown-->
 
 @section Scripts{
     <script src="~/js/user-details.js"></script>
