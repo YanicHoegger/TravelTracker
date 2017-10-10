@@ -5,9 +5,7 @@
     ViewData["Title"] = "Register new accounts";
 }
 
-<!--TODO: bootstrap class for content-->
-
-<form method="POST" asp-controller="Account" asp-action="Register">
+<form method="POST" asp-controller="Account" asp-action="Register" class="panel-body">
     <span asp-validation-for="ErrorMessage" class="text-danger"></span>
 	
     <div class="form-group">
