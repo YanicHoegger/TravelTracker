@@ -6,7 +6,7 @@ using Xunit;
 
 namespace IntegrationTests
 {
-    public class NonUserTests : MemoryDbTestBase
+    public class VisitSiteTest : MemoryDbTestBase
     {
         [Theory]
         [InlineData("/")]
@@ -29,7 +29,7 @@ namespace IntegrationTests
 
         HttpResponseMessage Response;
 
-        public NonUserTests(TestServerClientFixture<MemoryDbContextStartUp> testServerClient) : base(testServerClient)
+        public VisitSiteTest(TestServerClientFixture<MemoryDbContextStartUp> testServerClient) : base(testServerClient)
         {
         }
 
