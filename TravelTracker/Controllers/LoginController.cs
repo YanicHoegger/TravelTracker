@@ -17,6 +17,7 @@ namespace TravelTracker.Controllers
             _signInManager = signInManager;
         }
 
+        //TODO:Check if https is needed
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
 		{
