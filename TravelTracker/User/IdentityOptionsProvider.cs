@@ -4,6 +4,8 @@ namespace TravelTracker.User
 {
     public class IdentityOptionsProvider : IIdentityOptionsProvider
     {
+        //TODO: Read from appsetting
+
 		readonly bool _passwordRequireDigit;
 		readonly int _passwordRequiredLength = 6;
 		readonly bool _passwordRequireNonAlphanumeric;
