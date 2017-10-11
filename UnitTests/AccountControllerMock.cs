@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Moq;
 using TravelTracker.Controllers;
-using TravelTracker.Messages;
 
 namespace UnitTests
 {
     public class AccountControllerMock
     {
         private readonly AccountController _controller;
-        private readonly MessageCollection _messageCollection = new MessageCollection();
 
         public AccountControllerMock()
         {
@@ -55,7 +53,7 @@ namespace UnitTests
 
 
 			//SERVICES CONFIGURATIONS
-			_controller = new AccountController(fakeUserManager.Object, signInManager.Object, _messageCollection);
+			_controller = new AccountController(fakeUserManager.Object);
         }
 
         public AccountController AccountController
@@ -63,14 +61,6 @@ namespace UnitTests
             get 
             {
                 return _controller;
-            }
-        }
-
-        public MessageCollection MessageCollection 
-        {
-            get 
-            {
-                return _messageCollection;
             }
         }
     }

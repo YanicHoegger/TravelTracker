@@ -6,12 +6,12 @@ using Xunit;
 
 namespace IntegrationTests
 {
-    public class HomeControllerTest : MemoryDbTestBase
+    public class NonUserTests : MemoryDbTestBase
     {
         [Theory]
         [InlineData("/")]
         [InlineData("/Home/Index")]
-        [InlineData("/Home/Error")]
+        [InlineData("/Home/AccessDenied")]
         public async Task VisitSiteSuccessful(string site)
         {
             await WhenVisitSite(site);
@@ -29,7 +29,7 @@ namespace IntegrationTests
 
         HttpResponseMessage Response;
 
-        public HomeControllerTest(TestServerClientFixture<MemoryDbContextStartUp> testServerClient) : base(testServerClient)
+        public NonUserTests(TestServerClientFixture<MemoryDbContextStartUp> testServerClient) : base(testServerClient)
         {
         }
 
@@ -47,7 +47,7 @@ namespace IntegrationTests
         void ThenAccessDenied()
         {
 			//TODO: Check right status code
-			Assert.Equal(HttpStatusCode.Forbidden, Response.StatusCode);
+            Assert.Equal(HttpStatusCode.Unauthorized, Response.StatusCode);
         }
     }
 }
