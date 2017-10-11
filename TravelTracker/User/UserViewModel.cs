@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace TravelTracker.User
+﻿namespace TravelTracker.User
 {
     public class UserViewModel
     {

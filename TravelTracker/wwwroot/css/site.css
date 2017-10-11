@@ -60,4 +60,5 @@ textarea {
 .navbar-logedin-username {
     margin-top: 6px;
     margin-bottom: 6px;
+    padding: 0px !important;
 }

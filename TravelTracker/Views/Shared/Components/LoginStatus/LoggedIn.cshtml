@@ -1,11 +1,10 @@
-﻿@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
-@model IdentityUser
+﻿@using TravelTracker.User
+@model UserViewModel
 
 <form class="navbar-form navbar-right" role="search" asp-controller="Login" asp-action="Logout">
 	<ul class="nav navbar-nav navbar-right">
 		<li>
-			<p class="navbar-text align-middle navbar-logedin-username">Hello @Model.UserName</p>
-			<!--TODO: Link to user data-->
+            <a href="@Model.RouteUrl" class="navbar-text align-middle navbar-logedin-username">Hello @Model.UserName</a>
 		</li>
 		<li>
 			<button type="submit" class="btn btn-default">Log out</button>
