@@ -13,4 +13,7 @@
     <ProjectReference Include="..\TravelTracker\TravelTracker.csproj">
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AccountControllerTests\" />
+  </ItemGroup>
 </Project>

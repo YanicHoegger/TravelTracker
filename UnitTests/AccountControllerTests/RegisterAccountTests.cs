@@ -10,7 +10,7 @@ using Xunit;
 
 namespace UnitTests
 {
-    public class AccountControllerTests
+    public class RegisterAccountTests
     {
         [Fact]
         public async Task RegisterSuccessfulTest()
