@@ -28,7 +28,7 @@ namespace TravelTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterUserViewModel viewModel)
         {
-            if (!TryValidateModel(viewModel))
+            if(!ModelState.IsValid)
             {
                 return View(viewModel);
             }
