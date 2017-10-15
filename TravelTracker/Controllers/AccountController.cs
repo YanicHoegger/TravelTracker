@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -75,8 +76,18 @@ namespace TravelTracker.Controllers
         public async Task<IActionResult> DeleteUser(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
+            if(user == null)
+            {
+                throw new ArgumentException($"'{username}' is not an existend UserName");
+            }
 
-            await _userManager.DeleteAsync(user);
+            var result = await _userManager.DeleteAsync(user);
+            if(result != IdentityResult.Success)
+            {
+                //Use own Exception, as example UserManagerException
+                throw new UnauthorizedAccessException("Can not delete user. Reson(s): " 
+                                                      + string.Join(", ", result.Errors.Select(x => x.Description)));
+            }
 
             return Redirect(nameof(DisplayAll));
         }
