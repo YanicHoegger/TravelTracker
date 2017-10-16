@@ -4,7 +4,7 @@ using System.Linq;
 using TravelTracker.User;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.AccountControllerTests
 {
     public class RegisterUserViewModelTests
     {

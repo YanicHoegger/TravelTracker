@@ -8,7 +8,7 @@ using TravelTracker.Controllers;
 using TravelTracker.User;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.AccountControllerTests
 {
     public class RegisterAccountTests
     {
