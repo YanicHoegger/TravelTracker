@@ -45,6 +45,7 @@ namespace TravelTracker.User
         public string NewUserName { get; set; }
     }
 
+    //TODO: Name refactoring, is constructor needed?
     public class NewEmailViewModel
     {
         public NewEmailViewModel() { }
