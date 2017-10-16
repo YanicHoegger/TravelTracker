@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using TravelTracker.User;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace UnitTests.AccountControllerTests
 {
-    public class RegisterUserViewModelTests
+    public class RegisterUserViewModelTests : ViewModelTestBase
     {
         [Fact]
         public void ViewModelValidWhenValidPropertiesTest()
@@ -69,9 +70,8 @@ namespace UnitTests.AccountControllerTests
         }
 
         RegisterUserViewModel model;
-        ValidationContext context;
-        List<ValidationResult> result;
-        bool isValid;
+
+        protected override object ViewModel => model;
 
         void GivenModel(string email = "right@email.com", string userName = "userName", string password = "123AAAaaa", string retypePassword = "123AAAaaa")
         {
@@ -82,29 +82,6 @@ namespace UnitTests.AccountControllerTests
                 Password = password,
                 RetypePassword = retypePassword
             };
-        }
-
-        void WhenValidate()
-        {
-            context = new ValidationContext(model, null, null);
-            result = new List<ValidationResult>();
-
-            isValid = Validator.TryValidateObject(model, context, result, true);
-        }
-
-        void ThenValid()
-        {
-            Assert.True(isValid);
-        }
-
-        void ThenInvalid(params string[] errorMessages)
-        {
-            Assert.False(isValid);
-
-            foreach (var errorMessage in errorMessages)
-            {
-                Assert.Contains(errorMessage, result.Select(x => x.ErrorMessage));
-            }
         }
     }
 }
