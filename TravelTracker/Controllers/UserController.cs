@@ -31,35 +31,35 @@ namespace TravelTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeUserName([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, UserDetailsViewModel viewModel)
+        public async Task<IActionResult> ChangeUserName([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user, 
+                                                        UserDetailsViewModel viewModel)
         {
             if (user == null)
             {
                 return NotFound();
             }
 
-            user.UserName = viewModel.NewUserName.NewUserName;
-
-            viewModel.UpdateFromIdentityUser(user);
-
-            if (!TryValidateModel(viewModel.NewUserName))
+            if (!ModelState.IsValid)
             {
+                //No need to update the whole view model, because in error case only new user name will be visible
                 return View(nameof(Index), viewModel);
             }
 
+            user.UserName = viewModel.NewUserName.NewUserName;
             var identityResult = await _userManager.UpdateAsync(user);
 
-            if (identityResult.Succeeded)
+            if (!identityResult.Succeeded)
             {
-                return Redirect("~/" + user.UserName);
+				foreach (var error in identityResult.Errors)
+				{
+					ModelState.AddModelError("NewUserName.NewUserName", error.Description);
+				}
+
+				//No need to update the whole view model, because in error case only new user name will be visible
+				return View(nameof(Index), viewModel);
             }
 
-            foreach (var error in identityResult.Errors)
-            {
-                ModelState.AddModelError("NewUserName.NewUserName", error.Description);
-            }
-
-            return View(nameof(Index), viewModel);
+            return Redirect(Url.RouteUrl("users", new { username = user.UserName, action = "" }));
         }
 
         [HttpPost]
