@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace TravelTracker.User
 {
+    //TODO: UnitTest for UserBinder
     public class UserBinder : IModelBinder
     {
         readonly UserManager<IdentityUser> _userManager;
