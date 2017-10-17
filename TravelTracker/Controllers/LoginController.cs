@@ -21,7 +21,7 @@ namespace TravelTracker.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
 		{
-			if(!TryValidateModel(viewModel))
+			if(!ModelState.IsValid)
             {
                 return ViewComponent("LoginStatus", viewModel);
 			}

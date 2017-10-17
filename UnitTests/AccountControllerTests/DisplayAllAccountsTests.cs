@@ -48,6 +48,8 @@ namespace UnitTests.AccountControllerTests
                     }
                 }.AsQueryable();
 
+        const string RouteUrl = "RouteUrl";
+
         void GivenAccountControllerWithUsers()
         {
             var userManagerMock = new Mock<UserManagerMock>();
@@ -55,7 +57,7 @@ namespace UnitTests.AccountControllerTests
 
             _accountController = new AccountController(userManagerMock.Object)
             {
-                Url = new UrlHelperMock()
+                Url = new UrlHelperMock(RouteUrl, _users.Select(x => x.UserName))
             };
         }
 
@@ -83,7 +85,7 @@ namespace UnitTests.AccountControllerTests
         void AssertIdentityUserAndUserViewModel(IdentityUser identityUser, UserViewModel viewModel)
         {
             Assert.Equal(identityUser.UserName, viewModel.UserName);
-			//TODO: Test for viewModel.RouteUrl
+            Assert.Equal(RouteUrl, viewModel.RouteUrl);
 		}
 
         void ThenShowNoAccounts()

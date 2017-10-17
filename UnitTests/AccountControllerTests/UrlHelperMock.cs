@@ -1,11 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Xunit;
 
 namespace UnitTests.AccountControllerTests
 {
     public class UrlHelperMock : IUrlHelper
     {
+        readonly string _returnValue;
+        readonly IEnumerable<string> _userNames;
+
+        public UrlHelperMock(string returnValue, IEnumerable<string> userNames)
+        {
+            _userNames = userNames;
+            _returnValue = returnValue;
+        }
+
         public ActionContext ActionContext => throw new NotImplementedException();
 
         public string Action(UrlActionContext actionContext)
@@ -30,14 +41,11 @@ namespace UnitTests.AccountControllerTests
 
         public string RouteUrl(UrlRouteContext routeContext)
         {
-            if (!routeContext.RouteName.Equals("users"))
-			{
-				throw new ArgumentException("The used router should be 'users'", nameof(routeContext.RouteName));
-			}
+            var userNameRouteUrl = AssertUrlHelper.Users(routeContext.RouteName, routeContext.Values);
 
-			//TODO: Check for routeContext.Values
+			//Assert.Contains(userNameRouteUrl, _userNames); //TODO: Reactivate as soon AssertUrlHelper works
 
-			return "someString";
+			return _returnValue;
         }
     }
 }
