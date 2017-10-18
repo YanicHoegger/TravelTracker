@@ -15,35 +15,35 @@ namespace UnitTests.LoginControllerTests
 			_returnValue = returnValue;
 		}
 
-        public ActionContext ActionContext => throw new NotImplementedException();
+        public ActionContext ActionContext => throw new NotSupportedException();
 
         public string Action(UrlActionContext actionContext)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public string Content(string contentPath)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public bool IsLocalUrl(string url)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public string Link(string routeName, object values)
         {
             var userNameFromRouteUrl = AssertUrlHelper.Users(routeName, values);
 
-            //Assert.Equal(_userName, userNameFromRouteUrl); //TODO: Reactivate as soon AssertUrlHelper works
+            Assert.Equal(_userName, userNameFromRouteUrl); //TODO: Reactivate as soon AssertUrlHelper works
 
             return _returnValue;
         }
 
         public string RouteUrl(UrlRouteContext routeContext)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

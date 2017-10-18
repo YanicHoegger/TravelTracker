@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Reflection;
+using Xunit;
 
 namespace UnitTests
 {
@@ -8,9 +9,14 @@ namespace UnitTests
         public static string Users(string routName, object values)
         {
             Assert.Equal("users", routName);
-            //TODO: Check values
 
-            return "userName";
+            var valuesType = values.GetType();
+
+            var actionPropertyInfo = valuesType.GetProperty("action");
+            Assert.Equal("", actionPropertyInfo.GetValue(values));
+
+            var userNamePropertyInfo = valuesType.GetProperty("username");
+            return (string)userNamePropertyInfo.GetValue(values);
         }
     }
 }

@@ -17,33 +17,33 @@ namespace UnitTests.AccountControllerTests
             _returnValue = returnValue;
         }
 
-        public ActionContext ActionContext => throw new NotImplementedException();
+        public ActionContext ActionContext => throw new NotSupportedException();
 
         public string Action(UrlActionContext actionContext)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public string Content(string contentPath)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public bool IsLocalUrl(string url)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public string Link(string routeName, object values)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public string RouteUrl(UrlRouteContext routeContext)
         {
             var userNameRouteUrl = AssertUrlHelper.Users(routeContext.RouteName, routeContext.Values);
 
-			//Assert.Contains(userNameRouteUrl, _userNames); //TODO: Reactivate as soon AssertUrlHelper works
+			Assert.Contains(userNameRouteUrl, _userNames); //TODO: Reactivate as soon AssertUrlHelper works
 
 			return _returnValue;
         }
