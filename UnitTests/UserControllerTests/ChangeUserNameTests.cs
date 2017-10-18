@@ -18,7 +18,7 @@ namespace UnitTests.UserControllerTests
         {
             GivenUserControllerWithModelStateError();
 
-            await ChangerUserName();
+            await ChangeUserName();
 
             ThenResultWithModelStateError(errorMessage);
         }
@@ -28,17 +28,17 @@ namespace UnitTests.UserControllerTests
         {
             GivenUserControllerWhereUpdateAsyncNotSucceed();
 
-			await ChangerUserName();
+			await ChangeUserName();
 
 			ThenResultWithModelStateError(errorMessage);
         }
 
         [Fact]
-        public async Task ChangeUserNameSuccessfullTest()
+        public async Task ChangeUserNameSuccessfulTest()
         {
             GivenUserController();
 
-            await ChangerUserName();
+            await ChangeUserName();
 
             ThenSuccess();
         }
@@ -98,7 +98,7 @@ namespace UnitTests.UserControllerTests
 			};
         }
 
-        async Task ChangerUserName()
+        async Task ChangeUserName()
         {
             result = await userController.ChangeUserName(new IdentityUser(), viewModel);
         }

@@ -71,21 +71,26 @@ namespace TravelTracker.Controllers
                 return NotFound();
             }
 
+			if (!ModelState.IsValid)
+			{
+				//No need to update the whole view model, because in error case only new user name will be visible
+				return View(nameof(Index), viewModel);
+			}
+
             user.Email = viewModel.NewEmail.NewEmail;
+			var identityResult = await _userManager.UpdateAsync(user);
 
-            viewModel.UpdateFromIdentityUser(user);
-
-            //Validation for correct email is in ViewModel, validation for 'email is not used already' is in UserManager
-            if (TryValidateModel(viewModel.NewEmail))
+            if(!identityResult.Succeeded)
             {
-                var identityResult = await _userManager.UpdateAsync(user);
+				foreach (var error in identityResult.Errors)
+				{
+					ModelState.AddModelError("NewEmail.NewEmail", error.Description);
+				}
 
-                foreach (var error in identityResult.Errors)
-                {
-                    ModelState.AddModelError("NewEmail.NewEmail", error.Description);
-                }
+                return View(nameof(Index), viewModel);
             }
 
+            viewModel.UpdateFromIdentityUser(user);
             return View(nameof(Index), viewModel);
         }
 
@@ -98,21 +103,28 @@ namespace TravelTracker.Controllers
                 return NotFound();
             }
 
-            viewModel.UpdateFromIdentityUser(user);
-
-            if (!TryValidateModel(viewModel))
-            {
-                return View(nameof(Index), viewModel);
-            }
+			if (!ModelState.IsValid)
+			{
+				//No need to update the whole view model, because in error case only new user name will be visible
+				return View(nameof(Index), viewModel);
+			}
 
             var identityResult = await _userManager.ChangePasswordAsync(user, viewModel.NewPassword.CurrentPassword, viewModel.NewPassword.NewPassword);
 
-            foreach (var error in identityResult.Errors)
+            if(!identityResult.Succeeded)
             {
-                ModelState.AddModelError("NewPassword.PasswordError", error.Description);
+				foreach (var error in identityResult.Errors)
+				{
+					ModelState.AddModelError("NewPassword.PasswordError", error.Description);
+				}
+
+				return View(nameof(Index), viewModel); 
             }
 
-            return View(nameof(Index), viewModel);
+            //TODO: Why not redirect?
+            viewModel = new UserDetailsViewModel();
+			viewModel.UpdateFromIdentityUser(user);
+			return View(nameof(Index), viewModel);
         }
 
         //TODO: Remove as soon as a better way is found to give admin rights
