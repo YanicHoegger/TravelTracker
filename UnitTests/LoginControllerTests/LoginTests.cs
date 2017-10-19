@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+using Identity = Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -70,8 +70,7 @@ namespace UnitTests.LoginControllerTests
 
             var signinManagerMock = new Mock<SignInManagerMock>();
             signinManagerMock.Setup(x => x.PasswordSignInAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                             .ReturnsAsync(Microsoft.AspNetCore.Identity.SignInResult.Success);
-            //TODO: Check how to handle same definition of two different libraries --> Microsoft.AspNetCore.Identity.SignInResult.Success to SignInResult.Success
+                             .ReturnsAsync(Identity.SignInResult.Success);
 
             loginController = new LoginController(userManagerMock.Object, signinManagerMock.Object)
             {
@@ -104,8 +103,7 @@ namespace UnitTests.LoginControllerTests
 
 			var signinManagerMock = new Mock<SignInManagerMock>();
 			signinManagerMock.Setup(x => x.PasswordSignInAsync(It.IsAny<IdentityUser>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                             .ReturnsAsync(Microsoft.AspNetCore.Identity.SignInResult.Failed);
-			//TODO: Check how to handle same definition of two different libraries --> Microsoft.AspNetCore.Identity.SignInResult.Success to SignInResult.Success
+                             .ReturnsAsync(Identity.SignInResult.Failed);
 
 			loginController = new LoginController(userManagerMock.Object, signinManagerMock.Object);
 

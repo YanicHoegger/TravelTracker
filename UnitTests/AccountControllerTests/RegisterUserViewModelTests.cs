@@ -32,7 +32,6 @@ namespace UnitTests.AccountControllerTests
                        "The Retype Password field is required");
         }
 
-        //TODO; Check list from wikipedia
         [Theory]
         [InlineData("noAt.ch")]
         [InlineData("nothingAfter@")]

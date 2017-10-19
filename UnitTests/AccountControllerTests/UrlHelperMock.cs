@@ -43,7 +43,7 @@ namespace UnitTests.AccountControllerTests
         {
             var userNameRouteUrl = AssertUrlHelper.Users(routeContext.RouteName, routeContext.Values);
 
-			Assert.Contains(userNameRouteUrl, _userNames); //TODO: Reactivate as soon AssertUrlHelper works
+			Assert.Contains(userNameRouteUrl, _userNames);
 
 			return _returnValue;
         }

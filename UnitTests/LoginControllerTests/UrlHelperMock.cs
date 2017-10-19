@@ -36,7 +36,7 @@ namespace UnitTests.LoginControllerTests
         {
             var userNameFromRouteUrl = AssertUrlHelper.Users(routeName, values);
 
-            Assert.Equal(_userName, userNameFromRouteUrl); //TODO: Reactivate as soon AssertUrlHelper works
+            Assert.Equal(_userName, userNameFromRouteUrl);
 
             return _returnValue;
         }
