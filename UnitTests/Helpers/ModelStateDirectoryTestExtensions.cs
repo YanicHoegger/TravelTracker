@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Linq;
 
-namespace UnitTests
+namespace UnitTests.Helpers
 {
     public static class ModelStateDirectoryTestExtensions
     {

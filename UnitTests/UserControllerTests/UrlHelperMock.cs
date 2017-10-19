@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using UnitTests.Helpers;
 using Xunit;
 
 namespace UnitTests.UserControllerTests

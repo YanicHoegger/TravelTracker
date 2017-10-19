@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace UnitTests
+namespace UnitTests.Helpers
 {
     public class SignInManagerMock : SignInManager<IdentityUser>
     {

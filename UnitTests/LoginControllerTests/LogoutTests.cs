@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TravelTracker.Controllers;
+using UnitTests.Helpers;
 using Xunit;
 
 namespace UnitTests.LoginControllerTests

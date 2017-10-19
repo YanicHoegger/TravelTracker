@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Xunit;
 
-namespace UnitTests
+namespace UnitTests.Helpers
 {
     public static class AssertUrlHelper
     {

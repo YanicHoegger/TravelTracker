@@ -7,6 +7,7 @@ using Moq.Language.Flow;
 using TravelTracker.Controllers;
 using TravelTracker.User;
 using Xunit;
+using UnitTests.Helpers;
 
 namespace UnitTests.LoginControllerTests
 {

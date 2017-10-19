@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Moq;
 using TravelTracker.Controllers;
+using UnitTests.Helpers;
 using Xunit;
 
 namespace UnitTests.AccountControllerTests
