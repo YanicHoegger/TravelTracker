@@ -11,11 +11,10 @@ using Xunit;
 
 namespace UnitTests.AccountControllerTests
 {
-    //TODO: Assert Exception
     public class DeleteAccountTests
     {
-		[Fact]
-		public async Task DeleteUserAccountFromUserManagerTest()
+        [Fact]
+        public async Task DeleteUserAccountFromUserManagerSuccessfulTest()
 		{
 			GivenAccountControllerWithUser();
 
@@ -29,9 +28,7 @@ namespace UnitTests.AccountControllerTests
         {
             GivenAccountController();
 
-            await WhenDeletUserThatDoesNotExist();
-
-            ThenArgumentExceptionIsThrown();
+            await WhenDeletUserThatDoesNotExistThenThrowArgumentException();
         }
 
         [Fact]
@@ -39,9 +36,7 @@ namespace UnitTests.AccountControllerTests
         {
             GivenAccountControllerWitchCanNotDelete();
 
-            await WhenDeleteUserAsync();
-
-            ThenUnauthorizedAccessExceptionThrown();
+            await WhenDeleteUserAsyncThenUnauthorizedAccessExceptionIsThrown();
         }
 
         DeleteAccountTestUserManagerMock _userManager;
@@ -82,8 +77,6 @@ namespace UnitTests.AccountControllerTests
             _accountController = new AccountController(_userManager);
         }
 
-        Exception _exception;
-
         void GivenAccountController()
         {
 			var userManagerMock = new Mock<UserManagerMock>();
@@ -107,44 +100,27 @@ namespace UnitTests.AccountControllerTests
 
         async Task WhenDeleteUserAsync()
         {
-			try
-			{
-				await _accountController.DeleteUser(user1.UserName);
-			}
-			catch (Exception e)
-			{
-				_exception = e;
-			}
+            await _accountController.DeleteUser(user1.UserName);
         }
 
-        async Task WhenDeletUserThatDoesNotExist()
+        async Task WhenDeleteUserAsyncThenUnauthorizedAccessExceptionIsThrown()
         {
-            try
-            {
-                await _accountController.DeleteUser("NotExistendName");
-            }
-            catch (Exception e)
-            {
-                _exception = e;
-            }
+            var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _accountController.DeleteUser(user1.UserName));
+            Assert.Equal($"Can not delete user. Reson(s): {identityError1.Description}, {identityError2.Description}", exception.Message);
+        }
+
+        async Task WhenDeletUserThatDoesNotExistThenThrowArgumentException()
+        {
+            const string userName = "NotExistendName";
+
+            var argumentException = await Assert.ThrowsAsync<ArgumentException>(() => _accountController.DeleteUser(userName));
+            Assert.Equal($"'{userName}' is not an existend UserName", argumentException.Message);
         }
 
         void ThenUserDoesNotExistInUserManager()
         {
             Assert.DoesNotContain(user1, _userManager.Users);
             Assert.Equal(1, _userManager.Users.Count());
-        }
-
-        void ThenArgumentExceptionIsThrown()
-        {
-            var argumentException = Assert.IsType<ArgumentException>(_exception);
-            Assert.Equal("'NotExistendName' is not an existend UserName", _exception.Message);
-        }
-
-        void ThenUnauthorizedAccessExceptionThrown()
-        {
-            var unauthorizedAccessException = Assert.IsType<UnauthorizedAccessException>(_exception);
-            Assert.Equal($"Can not delete user. Reson(s): {identityError1.Description}, {identityError2.Description}", _exception.Message);
         }
     }
 }
