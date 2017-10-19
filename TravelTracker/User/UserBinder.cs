@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace TravelTracker.User
 {
-    //TODO: UnitTest for UserBinder
     public class UserBinder : IModelBinder
     {
         readonly UserManager<IdentityUser> _userManager;
@@ -23,9 +22,15 @@ namespace TravelTracker.User
                 throw new ArgumentNullException(nameof(bindingContext));
             }
 
-            var userName = (string)bindingContext.ActionContext.RouteData.Values["username"];
+            var userNameAsString = bindingContext.ActionContext.RouteData.Values["username"] as string;
 
-            var user = await _userManager.FindByNameAsync(userName);
+            if(userNameAsString == null)
+            {
+                //TODO: Use own Exception
+                throw new ArgumentException("ModelBinder is used with the wrong route");
+            }
+
+            var user = await _userManager.FindByNameAsync(userNameAsString);
 
             if (user == null)
             {
