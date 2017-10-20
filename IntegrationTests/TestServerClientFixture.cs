@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using IntegrationTests.Utilities;
 
 namespace IntegrationTests
 {
@@ -9,9 +10,8 @@ namespace IntegrationTests
     {
         public TestServerClientFixture()
         {
-            //TODO: Find a way to resolve path right
 			var builder = new WebHostBuilder()
-				.UseContentRoot("/Users/lucyrebecca/RiderProjects/TravelTracker/TravelTracker")
+				.UseContentRoot(ProductionCodePath.GetTravelTracker())
                 .UseEnvironment("Development")
 				.UseStartup<TStartup>();
             

@@ -1,17 +1,20 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
 
 namespace IntegrationTests
 {
-    public class VisitSiteTest : MemoryDbTestBase
+    //TODO: Should those test go into the specific controller test?
+    public class VisitSiteTest : TestBase<MemoryDbContextStartUp>
     {
         [Theory]
         [InlineData("/")]
         [InlineData("/Home/Index")]
-        [InlineData("/Home/AccessDenied")]
+        [InlineData("/Home/Error")]
         public async Task VisitSiteSuccessful(string site)
         {
             await WhenVisitSite(site);
@@ -27,15 +30,82 @@ namespace IntegrationTests
             ThenAccessDenied();
         }
 
-        HttpResponseMessage Response;
+        [Theory]
+        [InlineData("/Account/Register")]
+        [InlineData("/Account/DisplayAll")]
+        public async Task VisitSiteAsAdminSuccessful(string site)
+		{
+            await GivenLogedInAsAdmin();
+			await WhenVisitSite(site);
+			ThenSuccess();
+		}
 
-        public VisitSiteTest(TestServerClientFixture<MemoryDbContextStartUp> testServerClient) : base(testServerClient)
+        [Fact]
+        public async Task VisitTravellerMaxSiteWhenNotLogedInThenAccessDenied()
         {
+            await GivenAccountMax();
+			await WhenVisitMaxSite();
+			ThenAccessDenied();
+        }
+
+		[Fact]
+		public async Task VisitTravellerMaxSiteWhenLogedInThenSuccessful()
+		{
+            await GivenAccountMaxAndLogedIn();
+			await WhenVisitMaxSite();
+			ThenSuccess();
+		}
+
+		HttpResponseMessage Response;
+
+        IdentityUser max = new IdentityUser()
+        {
+			UserName = "max",
+			Email = "max@test.com"
+        };
+        string password = "ValidPassword123";
+
+        async Task GivenLogedInAsAdmin()
+        {
+            await CreateAccountMax();
+
+            var userManager = Server.Host.Services.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
+            await userManager.AddClaimAsync(max, new Claim(ClaimTypes.Role, "Administrator"));
+
+            await LogInMax();
+        }
+
+        async Task GivenAccountMax()
+        {
+            await CreateAccountMax();
+        }
+
+        async Task GivenAccountMaxAndLogedIn()
+        {
+            await CreateAccountMax();
+            await LogInMax();
+        }
+
+		async Task CreateAccountMax()
+		{
+			var userManager = Server.Host.Services.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
+			await userManager.CreateAsync(max, password);
+		}
+
+        async Task LogInMax()
+        {
+			var signInManager = Server.Host.Services.GetService(typeof(SignInManager<IdentityUser>)) as SignInManager<IdentityUser>;
+            await signInManager.PasswordSignInAsync(max, password, false, false);
         }
 
         async Task WhenVisitSite(string site)
         {
             Response = await Client.GetAsync(site);
+        }
+
+        Task WhenVisitMaxSite()
+        {
+            return WhenVisitSite("traveller/max");
         }
 
         void ThenSuccess()
