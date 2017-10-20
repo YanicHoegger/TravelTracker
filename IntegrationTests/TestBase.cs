@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using TravelTracker;
 using IntegrationTests.Utilities;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace IntegrationTests
 {

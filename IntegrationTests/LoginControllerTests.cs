@@ -50,13 +50,12 @@ namespace IntegrationTests
             ThenSuccessfullyLogedOutAsync();
         }
 
-        //TODO: Check readonly if every Test creates new objects
         public LoginControllerTests() : base()
         {
-            accountHelper = new AccountHelper(Server);
+            _accountHelper = new AccountHelper(Server);
         }
 
-        AccountHelper accountHelper;
+        readonly AccountHelper _accountHelper;
 
         IdentityUser user = new IdentityUser()
 		{
@@ -69,7 +68,7 @@ namespace IntegrationTests
 
         async Task GivenAccount()
         {
-            await accountHelper.CreateUserAsync(user, validPassword);
+            await _accountHelper.CreateUserAsync(user, validPassword);
         }
 
         async Task WhenLoginWithWrongPasswordAsync()
