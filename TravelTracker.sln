@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelTracker", "TravelTrac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{5511EB6A-110B-48F3-A5A9-27F82A40879D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{55D4138B-DF23-46A4-B14C-4794221E3DFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5511EB6A-110B-48F3-A5A9-27F82A40879D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5511EB6A-110B-48F3-A5A9-27F82A40879D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5511EB6A-110B-48F3-A5A9-27F82A40879D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55D4138B-DF23-46A4-B14C-4794221E3DFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55D4138B-DF23-46A4-B14C-4794221E3DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55D4138B-DF23-46A4-B14C-4794221E3DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55D4138B-DF23-46A4-B14C-4794221E3DFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
