@@ -12,9 +12,6 @@ namespace IntegrationTests
     {
         public TestBase()
         {
-            //TODO: Try that approach
-            var temp = PlatformServices.Default.Application.ApplicationBasePath;
-
 			var builder = new WebHostBuilder()
 				.UseContentRoot(ProductionCodePath.GetTravelTracker())
 				.UseEnvironment("Development")
