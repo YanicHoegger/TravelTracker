@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -63,7 +64,8 @@ namespace TravelTracker
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                dbContext.Database.Migrate(); //this will generate the db if it does not exist
+
+                EnsureDatabaseCreated(dbContext);
             }
             else
             {
@@ -87,5 +89,10 @@ namespace TravelTracker
                     "{controller=Home}/{action=Index}");
             });
         }
+
+        protected virtual void EnsureDatabaseCreated(IdentityDbContext dbContext)
+        {
+            dbContext.Database.Migrate(); //this will generate the db if it does not exist
+		}
     }
 }
