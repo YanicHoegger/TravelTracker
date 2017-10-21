@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -94,9 +93,6 @@ namespace IntegrationTests
 
         async Task Login(string email, string password)
         {
-			//var content = new StringContent($"Email={email}&Password={password}");
-			//response = await Client.PostAsync("Login/Login", content);
-
 			var formData = new Dictionary<string, string>
               {
             	{"Email", email},
