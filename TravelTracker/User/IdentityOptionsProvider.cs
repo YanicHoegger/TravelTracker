@@ -6,7 +6,6 @@ namespace TravelTracker.User
 {
     public class IdentityOptionsProvider : IIdentityOptionsProvider
     {
-        //TODO: Make subsequence for Password in appsettings.json
         public IdentityOptionsProvider(IConfigurationRoot config)
         {
             PasswordRequireDigit = Convert.ToBoolean(GetConfig(config, "Identity:Password:RequireDigit"));
