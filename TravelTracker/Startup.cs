@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +13,7 @@ using TravelTracker.User;
 
 namespace TravelTracker
 {
-    public class Startup
+    public class Startup : IStartup
     {
         public Startup(IHostingEnvironment env)
         {
@@ -27,7 +28,7 @@ namespace TravelTracker
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
             services.AddMvc();
@@ -55,16 +56,21 @@ namespace TravelTracker
 		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IdentityDbContext dbContext)
+        public void Configure(IApplicationBuilder app)
         {
+            var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            var env = app.ApplicationServices.GetService<IHostingEnvironment>();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
 
+                var dbContext = app.ApplicationServices.GetService<IdentityDbContext>();
                 EnsureDatabaseCreated(dbContext);
             }
             else
