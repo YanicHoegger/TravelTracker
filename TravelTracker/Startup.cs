@@ -47,6 +47,8 @@ namespace TravelTracker
             services.AddIdentity<IdentityUser, IdentityRole>(identityOptionsProvider.SetOptions)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();
+
+            return services.BuildServiceProvider();
         }
 
         protected virtual void SetUpDataBase(IServiceCollection services)
