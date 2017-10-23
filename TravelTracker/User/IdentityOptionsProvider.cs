@@ -6,14 +6,15 @@ namespace TravelTracker.User
 {
     public class IdentityOptionsProvider : IIdentityOptionsProvider
     {
+        //TODO: Make subsequence for Password in appsettings.json
         public IdentityOptionsProvider(IConfigurationRoot config)
         {
-            PasswordRequireDigit = Convert.ToBoolean(config["Identity:RequireDigit"]);
-            PasswordRequiredLength = Convert.ToInt32(config["Identity:RequiredLength"]);
-            PasswordRequireNonAlphanumeric = Convert.ToBoolean(config["Identity:RequireNonAlphanumeric"]);
-            PasswordRequireUppercase = Convert.ToBoolean(config["Identity:RequireUppercase"]);
-            PasswordRequireLowercase = Convert.ToBoolean(config["Identity:RequireLowercase"]);
-            RequireDigitUniqueEmail = Convert.ToBoolean(config["Identity:RequireUniqueEmail"]);
+            PasswordRequireDigit = Convert.ToBoolean(GetConfig(config, "Identity:Password:RequireDigit"));
+            PasswordRequiredLength = Convert.ToInt32(GetConfig(config, "Identity:Password:RequiredLength"));
+            PasswordRequireNonAlphanumeric = Convert.ToBoolean(GetConfig(config, "Identity:Password:RequireNonAlphanumeric"));
+            PasswordRequireUppercase = Convert.ToBoolean(GetConfig(config, "Identity:Password:RequireUppercase"));
+            PasswordRequireLowercase = Convert.ToBoolean(GetConfig(config, "Identity:Password:RequireLowercase"));
+            RequireDigitUniqueEmail = Convert.ToBoolean(GetConfig(config, "Identity:RequireUniqueEmail"));
         }
 
         public void SetOptions(IdentityOptions options)
@@ -32,5 +33,17 @@ namespace TravelTracker.User
         public bool PasswordRequireUppercase { get; }
         public bool PasswordRequireLowercase { get; }
         public bool RequireDigitUniqueEmail { get; }
+
+        static string GetConfig(IConfigurationRoot config, string selector)
+        {
+            var result = config[selector];
+
+            if(result == null)
+            {
+                throw new ArgumentException($"There is no setting for '{selector}'");
+            }
+
+            return result;
+        }
     }
 }
