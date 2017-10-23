@@ -43,7 +43,8 @@ namespace TravelTracker
 
             SetUpDataBase(services);
 
-            var identityOptionsProvider = new IdentityOptionsProvider();
+            var identityOptionsProvider = new IdentityOptionsProvider(Configuration);             services.AddSingleton<IIdentityOptionsProvider>(identityOptionsProvider);
+
             services.AddIdentity<IdentityUser, IdentityRole>(identityOptionsProvider.SetOptions)
                 .AddEntityFrameworkStores<IdentityDbContext>()
                 .AddDefaultTokenProviders();

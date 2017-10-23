@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace TravelTracker.User
 {
     public class IdentityOptionsProvider : IIdentityOptionsProvider
     {
-        //TODO: Read from appsetting
-
-		readonly bool _passwordRequireDigit;
-		readonly int _passwordRequiredLength = 6;
-		readonly bool _passwordRequireNonAlphanumeric;
-		readonly bool _passwordRequireUppercase = true;
-		readonly bool _passwordRequireLowercase = true;
-		readonly bool _RequireDigitUniqueEmail = true;
+        public IdentityOptionsProvider(IConfigurationRoot config)
+        {
+            PasswordRequireDigit = Convert.ToBoolean(config["Identity:RequireDigit"]);
+            PasswordRequiredLength = Convert.ToInt32(config["Identity:RequiredLength"]);
+            PasswordRequireNonAlphanumeric = Convert.ToBoolean(config["Identity:RequireNonAlphanumeric"]);
+            PasswordRequireUppercase = Convert.ToBoolean(config["Identity:RequireUppercase"]);
+            PasswordRequireLowercase = Convert.ToBoolean(config["Identity:RequireLowercase"]);
+            RequireDigitUniqueEmail = Convert.ToBoolean(config["Identity:RequireUniqueEmail"]);
+        }
 
         public void SetOptions(IdentityOptions options)
         {
@@ -23,11 +26,11 @@ namespace TravelTracker.User
 			options.User.RequireUniqueEmail = RequireDigitUniqueEmail;
         }
 
-		public bool PasswordRequireDigit => _passwordRequireDigit;
-		public int PasswordRequiredLength => _passwordRequiredLength;
-		public bool PasswordRequireNonAlphanumeric => _passwordRequireNonAlphanumeric;
-		public bool PasswordRequireUppercase => _passwordRequireUppercase;
-		public bool PasswordRequireLowercase => _passwordRequireLowercase;
-		public bool RequireDigitUniqueEmail => _RequireDigitUniqueEmail;
+        public bool PasswordRequireDigit { get; }
+        public int PasswordRequiredLength { get; }
+        public bool PasswordRequireNonAlphanumeric { get; }
+        public bool PasswordRequireUppercase { get; }
+        public bool PasswordRequireLowercase { get; }
+        public bool RequireDigitUniqueEmail { get; }
     }
 }

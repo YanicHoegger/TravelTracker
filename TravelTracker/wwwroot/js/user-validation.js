@@ -23,7 +23,7 @@
 
         jQuery.validator.addMethod('nonalphanumeric',
             function (value, element, params) {
-                return /[@#*!]/.test(value); //TODO: Correct regex for non alphanumeric characters
+                return /[\W_]/.test(value);
             });
 
         jQuery.validator.unobtrusive.adapters.add('nonalphanumeric', [ ],
