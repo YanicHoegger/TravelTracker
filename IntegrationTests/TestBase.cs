@@ -4,31 +4,55 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using TravelTracker;
 using IntegrationTests.Utilities;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Linq;
 
 namespace IntegrationTests
 {
-    public abstract class TestBase<TStartup> : IDisposable where TStartup : Startup
+    public abstract class TestBase<TStartup> : IDisposable where TStartup : Startup, IStartup, IDisposable
     {
         public TestBase()
         {
-			var builder = new WebHostBuilder()
-				.UseContentRoot(ProductionCodePath.GetTravelTracker())
-				.UseEnvironment("Development")
-				.UseStartup<TStartup>();
+            var builder = new WebHostBuilder()
+                .UseContentRoot(ProductionCodePath.GetTravelTracker())
+                .UseEnvironment("Development")
+                .UseStartup<TStartup>()
+                .ConfigureServices(services => {
+
+                    Startup = ConfigureStartUpService(services);
+
+            });
 
 			Server = new TestServer(builder);
 			Client = Server.CreateClient();
         }
 
-        public TestServer Server { get; private set; }
+        static TStartup ConfigureStartUpService(IServiceCollection serviceCollection)
+        {
+            var enviroment = serviceCollection.BuildServiceProvider().GetServices<IHostingEnvironment>().Single();
 
-        public HttpClient Client { get; private set; }
+            var startupType = typeof(TStartup);
+            var constructor = startupType.GetConstructor(new Type[]{ typeof(IHostingEnvironment) });
+
+            var startup = (TStartup)constructor.Invoke(new object[] { enviroment });
+
+            serviceCollection.AddSingleton(typeof(IStartup), startup);
+
+            return startup;
+        }
+
+        public TestServer Server { get; }
+
+        public HttpClient Client { get; }
+
+        public TStartup Startup { get; private set; }
 
         public virtual void Dispose()
         {
             Server.Dispose();
             Client.Dispose();
+            Startup.Dispose();
         }
-
     }
 }
