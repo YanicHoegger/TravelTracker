@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="Utilities\" />
+    <Folder Include="AccountControllerTests\" />
   </ItemGroup>
   <Target Name="CopyDepsFiles" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
     <ItemGroup>
