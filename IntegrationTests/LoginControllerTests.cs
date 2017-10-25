@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using IntegrationTests.TestStartups;
 using IntegrationTests.Utilities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;

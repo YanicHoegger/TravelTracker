@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IntegrationTests.TestStartups;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
@@ -72,7 +73,7 @@ namespace IntegrationTests
             var userManager = Server.Host.Services.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
             await userManager.AddClaimAsync(max, new Claim(ClaimTypes.Role, "Administrator"));
 
-            await LogInMax();
+            LogInMax();
         }
 
         async Task GivenAccountMax()
@@ -83,7 +84,7 @@ namespace IntegrationTests
         async Task GivenAccountMaxAndLogedIn()
         {
             await CreateAccountMax();
-            await LogInMax();
+            LogInMax();
         }
 
 		async Task CreateAccountMax()
@@ -92,10 +93,9 @@ namespace IntegrationTests
 			await userManager.CreateAsync(max, password);
 		}
 
-        async Task LogInMax()
+        void LogInMax()
         {
-			var signInManager = Server.Host.Services.GetService(typeof(SignInManager<IdentityUser>)) as SignInManager<IdentityUser>;
-            await signInManager.PasswordSignInAsync(max, password, false, false);
+            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", "max");
         }
 
         async Task WhenVisitSite(string site)

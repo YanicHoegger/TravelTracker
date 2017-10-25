@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using IntegrationTests.TestStartups;
 using Xunit;
 
 namespace IntegrationTests.AccountControllerTests
@@ -87,6 +88,8 @@ namespace IntegrationTests.AccountControllerTests
 
             var content = await response.Content.ReadAsStringAsync();
             Assert.Contains("Registering user successful", content);
+
+            //TODO: Check DB
         }
 
         async Task ThenRegisterSiteWithErrors()
