@@ -13,6 +13,7 @@ using TravelTracker.User;
 
 namespace TravelTracker
 {
+    //TODO refactoring --> make ConfigureServices and Configure virtual and encapsulate different configurations in methods
     public class Startup : IStartup
     {
         public Startup(IHostingEnvironment env)
@@ -84,6 +85,7 @@ namespace TravelTracker
             app.UseIdentity();
             app.UseStaticFiles();
 
+            ConfigureMiddleware(app);
 
             //TODO: Unit Test for routing
             app.UseMvc(routes =>
@@ -103,5 +105,9 @@ namespace TravelTracker
         {
             dbContext.Database.Migrate(); //this will generate the db if it does not exist
 		}
+
+        protected virtual void ConfigureMiddleware(IApplicationBuilder app)
+        {
+        }
     }
 }
