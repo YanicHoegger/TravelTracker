@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TravelTracker;
 
 namespace IntegrationTests.TestStartups
 {
-    public class MemoryDbContextStartUp : TestStartupBase
+    public class MemoryDbContextStartUp : Startup, IDisposable
     {
         public MemoryDbContextStartUp(IHostingEnvironment env) : base(env)
         {
@@ -21,7 +23,7 @@ namespace IntegrationTests.TestStartups
             //Nothing to do here, because of memory db
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             //Nothing to do here, because of memory db
         }

@@ -1,12 +1,14 @@
-﻿using IntegrationTests.Utilities;
+﻿using System;
+using IntegrationTests.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TravelTracker;
 
 namespace IntegrationTests.TestStartups
 {
-    public class SqlliteDbContextStartup :  TestStartupBase
+    public class SqlliteDbContextStartup : Startup, IDisposable
     {
         readonly TestFolderCreator _testfolderCreator;
 
@@ -23,7 +25,7 @@ namespace IntegrationTests.TestStartups
                     optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             _testfolderCreator.Dispose();
         }

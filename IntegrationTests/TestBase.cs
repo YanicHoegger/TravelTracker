@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace IntegrationTests
 {
-    public abstract class TestBase<TStartup> : IDisposable where TStartup : Startup, IStartup, IDisposable
+    public abstract class TestBase<TStartup> : IDisposable where TStartup : Startup, IDisposable
     {
         public TestBase()
         {
