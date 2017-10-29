@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using IntegrationTests.TestStartups;
 using Xunit;
 
 namespace IntegrationTests.UserControllerTests
 {
     public class ChangePasswordTests : UserControllerTestsBase
     {
+        public ChangePasswordTests()
+        {
+            TryGetDbValue("PasswordHash", out oldPasswordHash);
+        }
+
         [Fact]
         public async Task ChangePasswordSuccessfulTest()
         {
@@ -17,7 +19,7 @@ namespace IntegrationTests.UserControllerTests
 
             await WhenChangePassword();
 
-            await ThenSuccessfulChangedPassword();
+            ThenSuccessfulChangedPassword();
         }
 
         [Fact]
@@ -27,8 +29,10 @@ namespace IntegrationTests.UserControllerTests
 
             await WhenChangePassword();
 
-            await ThenSuccessfulChangedPassword();
+            ThenPasswordNotChanged();
         }
+
+        readonly string oldPasswordHash;
 
         string currentPassword;
         string newPassword;
@@ -45,7 +49,9 @@ namespace IntegrationTests.UserControllerTests
 
         void GivenWrongPasswordValues()
         {
-            
+            currentPassword = Password;
+            newPassword = "nouppercase";
+            retypeNewPassword = "somethingDifferent";
         }
 
         async Task WhenChangePassword()
@@ -58,20 +64,27 @@ namespace IntegrationTests.UserControllerTests
                 {"NewPassword.RetypeNewPassword", retypeNewPassword}
               };
 
-            HttpRequestMessage postRequest = new HttpRequestMessage(HttpMethod.Post, $"traveller/{User.UserName}/ChangePassword")
-            {
-                Content = new FormUrlEncodedContent(formData)
-            };
-
-
-            Response = await Client.SendAsync(postRequest);
+            Response = await CookieClient.PostAsync($"traveller/{User.UserName}/ChangePassword", formData);
         }
 
-        async Task ThenSuccessfulChangedPassword()
+        void ThenSuccessfulChangedPassword()
         {
-            Stream stream = await Response.Content.ReadAsStreamAsync();
-            HtmlDocument doc = new HtmlDocument();
-            doc.Load(stream);
+            Response.EnsureSuccessStatusCode();
+
+            string dbValue;
+            Assert.True(TryGetDbValue("PasswordHash", out dbValue));
+            Assert.NotEqual(oldPasswordHash, dbValue);
+        }
+
+        void ThenPasswordNotChanged()
+        {
+            //Response.EnsureSuccessStatusCode();
+
+            var temp = Response.Content.ReadAsStringAsync().Result;
+
+            string dbValue;
+            Assert.True(TryGetDbValue("PasswordHash", out dbValue));
+            Assert.Equal(oldPasswordHash, dbValue);
         }
     }
 }

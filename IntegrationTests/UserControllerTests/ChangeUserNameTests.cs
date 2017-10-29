@@ -15,7 +15,7 @@ namespace IntegrationTests.UserControllerTests
         [Fact]
         public async Task ChangeUserNameSuccessfulTest()
         {
-            await GivenRightNewUserName();
+            GivenRightNewUserName();
 
             await WhenChangeUserName();
 
@@ -27,25 +27,22 @@ namespace IntegrationTests.UserControllerTests
         {
             await GivenAlreayUsedNewUserName();
 
+            //TODO: Check how no exception is thrown when update db
             await WhenChangeUserName();
 
-            await ThenNotSuccessfulUserNameChanged();
+            ThenNotSuccessfulUserNameChanged();
         }
 
         string NewUserName;
         HttpResponseMessage Response;
 
-        async Task GivenRightNewUserName()
+        void GivenRightNewUserName()
         {
-            await CreateUserAndLogIn();
-
             NewUserName = "newName";
         }
 
         async Task GivenAlreayUsedNewUserName()
         {
-            await CreateUserAndLogIn();
-
             var anOtherUser = new IdentityUser()
             {
                 UserName = "alreadyusedName"
@@ -77,40 +74,18 @@ namespace IntegrationTests.UserControllerTests
 
             var redirectLocation = Response.Headers.Location;
             var redirectedResponse = await CookieClient.GetAsync(redirectLocation.OriginalString);
-
-            Stream stream = await redirectedResponse.Content.ReadAsStreamAsync();
-            HtmlDocument doc = new HtmlDocument();
-            doc.Load(stream);
-
-            Assert.NotNull(doc.GetElementbyId("accordion"));
+            redirectedResponse.EnsureSuccessStatusCode();
 
             string dbValue;
             Assert.True(TryGetDbValue("UserName", out dbValue));
             Assert.Equal(NewUserName, dbValue);
         }
 
-        async Task ThenNotSuccessfulUserNameChanged()
+        void ThenNotSuccessfulUserNameChanged()
         {
-            Stream stream = await Response.Content.ReadAsStreamAsync();
-            HtmlDocument doc = new HtmlDocument();
-            doc.Load(stream);
-
-            using (var connection = Startup.GetDbConnection())
-            {
-                connection.Open();
-
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT UserName FROM AspNetUsers";
-                    var dbReader = command.ExecuteReader();
-
-                    Assert.True(dbReader.Read());
-
-                    Assert.Equal(User.UserName, dbReader["UserName"]);
-                }
-
-                connection.Close();
-            }
+            string dbValue;
+            Assert.True(TryGetDbValue("UserName", out dbValue));
+            Assert.Equal(User.UserName, dbValue);
         }
     }
 }

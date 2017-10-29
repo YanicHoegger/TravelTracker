@@ -18,12 +18,14 @@ namespace IntegrationTests.UserControllerTests
                 Email = "test@test.com"
             };
             Password = "AAaa11";
+
+            CreateUserAndLogIn().Wait();
         }
 
         protected IdentityUser User { get; }
         protected string Password { get; }
 
-        protected async Task CreateUserAndLogIn()
+        private async Task CreateUserAndLogIn()
         {
             var userManager = (UserManager<IdentityUser>)Server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
             await userManager.CreateAsync(User, Password);
