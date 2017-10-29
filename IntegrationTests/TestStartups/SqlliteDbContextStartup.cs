@@ -2,6 +2,7 @@
 using IntegrationTests.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TravelTracker;
@@ -21,13 +22,26 @@ namespace IntegrationTests.TestStartups
         {
             _testfolderCreator.CreateFolder();
 
-            services.AddDbContext<IdentityDbContext>(options => options.UseSqlite($"Data Source={_testfolderCreator.FolderName}/users.sqlite",
+            services.AddDbContext<IdentityDbContext>(options => options.UseSqlite(DbConnectionString,
                     optionsBuilder => optionsBuilder.MigrationsAssembly("TravelTracker")));
+        }
+
+        public SqliteConnection GetDbConnection()
+        {
+            return new SqliteConnection(DbConnectionString);
         }
 
         public void Dispose()
         {
             _testfolderCreator.Dispose();
+        }
+
+        string DbConnectionString 
+        {
+            get
+            {
+                return $"Data Source={_testfolderCreator.FolderName}/users.sqlite";
+            }
         }
     }
 }

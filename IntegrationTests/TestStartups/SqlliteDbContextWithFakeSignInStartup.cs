@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
 namespace IntegrationTests.TestStartups
 {
-    public class MemoryDbContextWithFakeSignInStartup : MemoryDbContextStartUp
+    public class SqlliteDbContextWithFakeSignInStartup : SqlliteDbContextStartup
     {
-        public MemoryDbContextWithFakeSignInStartup(IHostingEnvironment env) : base(env)
+        public SqlliteDbContextWithFakeSignInStartup(IHostingEnvironment env) : base(env)
         {
         }
 
