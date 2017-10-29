@@ -39,9 +39,9 @@ namespace IntegrationTests.UserControllerTests
             return await AntiForgeryHelper.ExtractAntiForgeryToken(response);
         }
 
-        protected string GetDbValue(string valueSelector)
+        protected bool TryGetDbValue(string valueSelector, out string value)
         {
-            var value = "";
+            var success = false;
 
             using (var connection = Startup.GetDbConnection())
             {
@@ -49,7 +49,7 @@ namespace IntegrationTests.UserControllerTests
 
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT UserName FROM AspNetUsers";
+                    command.CommandText = "SELECT * FROM AspNetUsers";
                     var dbReader = command.ExecuteReader();
 
                     if(!dbReader.Read())
@@ -58,12 +58,13 @@ namespace IntegrationTests.UserControllerTests
                     }
 
                     value = (string)dbReader[valueSelector];
+                    success = true;
                 }
 
                 connection.Close();
             }
 
-            return value;
+            return success;
         }
     }
 }

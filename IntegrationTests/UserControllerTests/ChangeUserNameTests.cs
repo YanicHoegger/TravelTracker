@@ -78,15 +78,15 @@ namespace IntegrationTests.UserControllerTests
             var redirectLocation = Response.Headers.Location;
             var redirectedResponse = await CookieClient.GetAsync(redirectLocation.OriginalString);
 
-            //Stream stream = await redirectedResponse.Content.ReadAsStreamAsync();
-            //HtmlDocument doc = new HtmlDocument();
-            //doc.Load(stream);
+            Stream stream = await redirectedResponse.Content.ReadAsStreamAsync();
+            HtmlDocument doc = new HtmlDocument();
+            doc.Load(stream);
 
-            var temp = await redirectedResponse.Content.ReadAsStringAsync();
+            Assert.NotNull(doc.GetElementbyId("accordion"));
 
-            //TODO: Make sure name displayed change
-
-            Assert.Equal(NewUserName, GetDbValue("UserName"));
+            string dbValue;
+            Assert.True(TryGetDbValue("UserName", out dbValue));
+            Assert.Equal(NewUserName, dbValue);
         }
 
         async Task ThenNotSuccessfulUserNameChanged()
