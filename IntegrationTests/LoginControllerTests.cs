@@ -45,6 +45,8 @@ namespace IntegrationTests
         [Fact]
         public async Task WhenLogOutThenSuccessfullyLogedOutTest()
         {
+            await GivenLogedIn();
+
             await WhenLogOut();
 
             ThenSuccessfullyLogedOutAsync();
@@ -69,6 +71,13 @@ namespace IntegrationTests
         async Task GivenAccount()
         {
             await _accountHelper.CreateUserAsync(user, validPassword);
+        }
+
+        async Task GivenLogedIn()
+        {
+            await GivenAccount();
+
+            await WhenRightLoginAsync();
         }
 
         async Task WhenLoginWithWrongPasswordAsync()
@@ -126,6 +135,10 @@ namespace IntegrationTests
             //Throws Exception if not success
             response.EnsureSuccessStatusCode();
 
+            var cookies = CookiesHelper.ExtractCookiesFromResponse(response);
+            Assert.True(cookies.ContainsKey(".AspNetCore.Identity.Application"));
+            Assert.False(string.IsNullOrEmpty(cookies[".AspNetCore.Identity.Application"]));
+
             var content = await response.Content.ReadAsStringAsync();
             Assert.Contains("Redirect", content);
             Assert.Contains(user.UserName, content);
@@ -134,6 +147,10 @@ namespace IntegrationTests
         void ThenSuccessfullyLogedOutAsync()
         {
             AssertResponse.Redirect(response, "/");
+
+            var cookies = CookiesHelper.ExtractCookiesFromResponse(response);
+            Assert.True(cookies.ContainsKey(".AspNetCore.Identity.Application"));
+            Assert.True(string.IsNullOrEmpty(cookies[".AspNetCore.Identity.Application"]));
         }
     }
 }
