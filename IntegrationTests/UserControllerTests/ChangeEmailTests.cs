@@ -4,7 +4,7 @@ using Xunit;
 
 namespace IntegrationTests.UserControllerTests
 {
-    public class ChangeEmailTests : TestBase<SqlliteDbContextStartup>
+    public class ChangeEmailTests : UserControllerTestsBase
     {
         [Fact]
         public async Task ChangeEmailSuccessfulTest()
