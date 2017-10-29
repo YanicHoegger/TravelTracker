@@ -58,7 +58,7 @@ namespace IntegrationTests.UserControllerTests
 
             string dbValue;
             Assert.True(TryGetDbValue("Email", out dbValue));
-            Assert.NotEqual(newEmail, dbValue);
+            Assert.Equal(newEmail, dbValue);
         }
 
         void ThenEmailNotChanged()
@@ -67,7 +67,7 @@ namespace IntegrationTests.UserControllerTests
 
             string dbValue;
             Assert.True(TryGetDbValue("Email", out dbValue));
-            Assert.NotEqual(User.Email, dbValue);
+            Assert.Equal(User.Email, dbValue);
         }
     }
 }
