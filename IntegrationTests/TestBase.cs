@@ -17,7 +17,6 @@ namespace IntegrationTests
             var builder = new WebHostBuilder()
                 .UseContentRoot(ProductionCodePath.GetTravelTracker())
                 .UseEnvironment("Development")
-                .UseStartup<TStartup>()
                 .ConfigureServices(services => {
 
                     Startup = ConfigureStartUpService(services);
