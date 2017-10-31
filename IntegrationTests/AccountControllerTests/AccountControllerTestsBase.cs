@@ -27,9 +27,9 @@ namespace IntegrationTests.AccountControllerTests
             Client.DefaultRequestHeaders.Add("IntegrationTestLogin", new[] { user.UserName, "Administrator" });
         }
 
-        protected async Task<string> GetAntiForgeryToken()
+        protected async Task<string> GetAntiForgeryToken(string action)
         {
-            var response = await CookieClient.GetAsync($"/Account/Register");
+            var response = await CookieClient.GetAsync($"/Account/{action}");
             response.EnsureSuccessStatusCode();
 
             return await AntiForgeryHelper.ExtractAntiForgeryToken(response);

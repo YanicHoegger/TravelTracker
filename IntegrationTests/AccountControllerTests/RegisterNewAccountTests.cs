@@ -13,7 +13,7 @@ namespace IntegrationTests.AccountControllerTests
         [Fact]
         public async Task RegisterNewUserSuccessfulTest()
         {
-            await GivenValues();
+            GivenValues();
 
             await WhenRegister();
 
@@ -23,7 +23,7 @@ namespace IntegrationTests.AccountControllerTests
         [Fact]
         public async Task RegisterNewUserWithWrongValuesNotSuccessfulTest()
         {
-            await GivenWrongValues();
+            GivenWrongValues();
 
             await WhenRegister();
 
@@ -37,7 +37,7 @@ namespace IntegrationTests.AccountControllerTests
 
         HttpResponseMessage response;
 
-        async Task GivenValues()
+        void GivenValues()
         {
             email = "test@test.email";
             userName = "testUserName";
@@ -45,7 +45,7 @@ namespace IntegrationTests.AccountControllerTests
             retypePassword = password;
         }
 
-        async Task GivenWrongValues()
+        void GivenWrongValues()
         {
             //TODO: Use already given username
             email = "invalidEmail";
@@ -58,7 +58,7 @@ namespace IntegrationTests.AccountControllerTests
         {
             var formData = new Dictionary<string, string>()
             {
-                {"__RequestVerificationToken", await GetAntiForgeryToken()},
+                {"__RequestVerificationToken", await GetAntiForgeryToken("Register")},
                 {"Email", email},
                 {"UserName", userName},
                 {"Password", password},
@@ -83,15 +83,11 @@ namespace IntegrationTests.AccountControllerTests
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT * FROM AspNetUsers";
-                    var dbReader = command.ExecuteReader();
+                    var dbReader = await command.ExecuteReaderAsync();
 
-                    if (!dbReader.Read())
-                    {
-                        throw new Exception("Database is empty");
-                    }
-
-                    //TODO: Check how to get to secound entry in a "nice" way
-                    dbReader.Read();
+                    //The new account is in the secound row. In the first row is the admin account
+                    Assert.True(dbReader.Read());
+                    Assert.True(dbReader.Read());
 
                     Assert.Equal(userName, dbReader["UserName"]);
                     Assert.Equal(email, dbReader["Email"]);
