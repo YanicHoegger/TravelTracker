@@ -1,13 +1,11 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.TestHost;
 
 namespace IntegrationTests.Utilities
 {
+    //TODO: Is this class really needed?
     public class AccountHelper
     {
         public UserManager<IdentityUser> UserManager { get; private set; }

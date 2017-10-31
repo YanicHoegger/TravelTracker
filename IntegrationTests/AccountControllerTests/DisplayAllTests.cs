@@ -5,14 +5,19 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using IntegrationTests.TestStartups;
-using IntegrationTests.Utilities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
 
 namespace IntegrationTests.AccountControllerTests
 {
-    public class DisplayAllTests : TestBase<MemoryDbContextStartUp>
+    public class DisplayAllTests : TestBase<MemoryDbContextWithFakeSignInStartup>
     {
+        public DisplayAllTests()
+        {
+            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", new[] { users[0].UserName, "Administrator" });
+        }
+
         [Fact]
         public async Task DisplayAllAccountsTest()
         {
@@ -21,16 +26,6 @@ namespace IntegrationTests.AccountControllerTests
             await WhenDisplayAll();
 
             await ThenDisplayAll();
-        }
-
-        [Fact]
-        public async Task DisplayNoAccountsTest()
-        {
-            GivenNoAccounts();
-
-            await WhenDisplayAll();
-
-            await ThenDisplayNone();
         }
 
         HttpResponseMessage Response;
@@ -50,24 +45,12 @@ namespace IntegrationTests.AccountControllerTests
 
         async Task GivenAccounts()
         {
-            var accountHelper = new AccountHelper(Server);
-            //TODO: Check how to rund multiple in foreach
-            var awaiter = new List<Task>();
-
+            var userManager = (UserManager<IdentityUser>)Server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
+   
             foreach(var user in users)
             {
-                awaiter.Add(accountHelper.CreateUserAsync(user, "ASas12"));
+                await userManager.CreateAsync(user);
             }
-
-            foreach(var task in awaiter)
-            {
-                await task;
-            }
-        }
-
-        void GivenNoAccounts()
-        {
-            //Nothing to do here
         }
 
         async Task WhenDisplayAll()
@@ -81,28 +64,14 @@ namespace IntegrationTests.AccountControllerTests
             //Throws Exception if not success
             Response.EnsureSuccessStatusCode();
 
-            var listItemElements = await GetListItems();
-        }
-
-        async Task ThenDisplayNone()
-        {
-            //Throws Exception if not success
-            Response.EnsureSuccessStatusCode();
-
-            Assert.Empty(await GetListItems());
-        }
-
-        async Task<IEnumerable<HtmlNode>> GetListItems()
-        {
             Stream stream = await Response.Content.ReadAsStreamAsync();
             HtmlDocument doc = new HtmlDocument();
             doc.Load(stream);
 
-            //TODO: Set an id for list
-            var listElement = doc.GetElementbyId("id");
-            //var listItemElements = listElement.ChildNodes.Where(x => x.Attributes.Contains());
+            var listElement = doc.GetElementbyId("accountList");
+            var listItemElements = listElement.Elements("li");
 
-            return null;
+            Assert.Equal(2, listItemElements.Count());
         }
     }
 }
