@@ -26,7 +26,7 @@ namespace TravelTracker.User
 
             if(userNameAsString == null)
             {
-                //TODO: Use own Exception
+                //TODO: Use own Exception --> Declare in issues on github
                 throw new ArgumentException("ModelBinder is used with the wrong route");
             }
 
