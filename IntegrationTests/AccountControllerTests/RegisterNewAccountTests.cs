@@ -1,19 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using IntegrationTests.TestStartups;
 using Xunit;
 
 namespace IntegrationTests.AccountControllerTests
 {
-    public class RegisterNewAccountTests : TestBase<SqlliteDbContextStartup>
+    public class RegisterNewAccountTests : AccountControllerTestsBase
     {
         [Fact]
         public async Task RegisterNewUserSuccessfulTest()
         {
-            GivenValues();
+            await GivenValues();
 
             await WhenRegister();
 
@@ -23,62 +23,49 @@ namespace IntegrationTests.AccountControllerTests
         [Fact]
         public async Task RegisterNewUserWithWrongValuesNotSuccessfulTest()
         {
-            GivenWrongValues();
+            await GivenWrongValues();
 
             await WhenRegister();
 
             await ThenRegisterSiteWithErrors();
         }
 
-        [Fact]
-        public async Task RegisterNewUserWithEmptyValuesNotSuccessfulTest()
-        {
-            GivenEmptyValues();
+        string userName;
+        string email;
+        string password;
+        string retypePassword;
 
-            await WhenRegister();
-
-            await ThenRegisterSiteWithErrors();
-        }
-
-        Dictionary<string, string> formData;
         HttpResponseMessage response;
 
-        void GivenValues()
+        async Task GivenValues()
         {
-            CreateFormData("test@test.email", "testUserName", "ASde34", "ASde34");
+            email = "test@test.email";
+            userName = "testUserName";
+            password = "ASde34";
+            retypePassword = password;
         }
 
-        void GivenWrongValues()
+        async Task GivenWrongValues()
         {
             //TODO: Use already given username
-            CreateFormData("invalidEmail", "test", "as", "sadfaf");
+            email = "invalidEmail";
+            userName = "test";
+            password = "as";
+            retypePassword = "sadfaf";
         }
 
-        void CreateFormData(string email, string userName, string password, string retypePassword)
+        async Task WhenRegister()
         {
-            formData = new Dictionary<string, string>()
+            var formData = new Dictionary<string, string>()
             {
+                {"__RequestVerificationToken", await GetAntiForgeryToken()},
                 {"Email", email},
                 {"UserName", userName},
                 {"Password", password},
                 {"RetypePassword", retypePassword}
             };
-        }
 
-        void GivenEmptyValues()
-        {
-            formData = new Dictionary<string, string>();
-        }
-
-        async Task WhenRegister()
-        {
-            HttpRequestMessage postRequest = new HttpRequestMessage(HttpMethod.Post, "Account/Register")
-            {
-                Content = new FormUrlEncodedContent(formData)
-            };
-
-
-            response = await Client.SendAsync(postRequest);
+            response = await CookieClient.PostAsync("Account/Register", formData);
         }
 
         async Task ThenSuccessfulRegistered()
@@ -89,7 +76,30 @@ namespace IntegrationTests.AccountControllerTests
             var content = await response.Content.ReadAsStringAsync();
             Assert.Contains("Registering user successful", content);
 
-            //TODO: Check DB
+            using (var connection = Startup.GetDbConnection())
+            {
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT * FROM AspNetUsers";
+                    var dbReader = command.ExecuteReader();
+
+                    if (!dbReader.Read())
+                    {
+                        throw new Exception("Database is empty");
+                    }
+
+                    //TODO: Check how to get to secound entry in a "nice" way
+                    dbReader.Read();
+
+                    Assert.Equal(userName, dbReader["UserName"]);
+                    Assert.Equal(email, dbReader["Email"]);
+                    Assert.False(string.IsNullOrEmpty((string)dbReader["PasswordHash"]));
+                }
+
+                connection.Close();
+            }
         }
 
         async Task ThenRegisterSiteWithErrors()

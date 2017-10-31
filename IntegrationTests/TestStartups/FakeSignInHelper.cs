@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -20,6 +21,12 @@ namespace IntegrationTests.TestStartups
                 if (user == null)
                 {
                     return;
+                }
+
+                if(integrationTestUserHeader.Count > 1)
+                {
+                    var role = integrationTestUserHeader[1];
+                    await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, role));
                 }
 
                 var signInManger = context.RequestServices.GetRequiredService<SignInManager<IdentityUser>>();
