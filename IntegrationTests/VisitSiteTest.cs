@@ -10,7 +10,7 @@ using Xunit;
 namespace IntegrationTests
 {
     //TODO: Should those test go into the specific controller test?
-    public class VisitSiteTest : TestBase<MemoryDbContextStartUp>
+    public class VisitSiteTest : TestBase<MemoryDbContextWithFakeSignInStartup>
     {
         [Theory]
         [InlineData("/")]
@@ -42,60 +42,56 @@ namespace IntegrationTests
 		}
 
         [Fact]
-        public async Task VisitTravellerMaxSiteWhenNotLogedInThenAccessDenied()
+        public async Task VisitUserSiteWhenNotLogedInThenAccessDenied()
         {
-            await GivenAccountMax();
-			await WhenVisitMaxSite();
+            await GivenUserAccount();
+            await WhenVisitUserSite();
 			ThenAccessDenied();
         }
 
 		[Fact]
-		public async Task VisitTravellerMaxSiteWhenLogedInThenSuccessful()
+		public async Task VisitUserSiteWhenLogedInThenSuccessful()
 		{
-            await GivenAccountMaxAndLogedIn();
-			await WhenVisitMaxSite();
+            await GivenUserAccountAndLogedIn();
+			await WhenVisitUserSite();
 			ThenSuccess();
 		}
 
 		HttpResponseMessage Response;
 
-        IdentityUser max = new IdentityUser()
+        IdentityUser user = new IdentityUser()
         {
-			UserName = "max",
-			Email = "max@test.com"
+			UserName = "someUser",
+			Email = "user@test.com"
         };
-        string password = "ValidPassword123";
 
         async Task GivenLogedInAsAdmin()
         {
-            await CreateAccountMax();
+            await CreateUserAccount();
 
-            var userManager = Server.Host.Services.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
-            await userManager.AddClaimAsync(max, new Claim(ClaimTypes.Role, "Administrator"));
-
-            LogInMax();
+            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", new[] { user.UserName, "Administrator" });
         }
 
-        async Task GivenAccountMax()
+        async Task GivenUserAccount()
         {
-            await CreateAccountMax();
+            await CreateUserAccount();
         }
 
-        async Task GivenAccountMaxAndLogedIn()
+        async Task GivenUserAccountAndLogedIn()
         {
-            await CreateAccountMax();
-            LogInMax();
+            await CreateUserAccount();
+            LogInUser();
         }
 
-		async Task CreateAccountMax()
+		async Task CreateUserAccount()
 		{
 			var userManager = Server.Host.Services.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
-			await userManager.CreateAsync(max, password);
+            await userManager.CreateAsync(user);
 		}
 
-        void LogInMax()
+        void LogInUser()
         {
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", "max");
+            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", user.UserName);
         }
 
         async Task WhenVisitSite(string site)
@@ -103,9 +99,9 @@ namespace IntegrationTests
             Response = await Client.GetAsync(site);
         }
 
-        Task WhenVisitMaxSite()
+        Task WhenVisitUserSite()
         {
-            return WhenVisitSite("traveller/max");
+            return WhenVisitSite($"traveller/{user.UserName}");
         }
 
         void ThenSuccess()
