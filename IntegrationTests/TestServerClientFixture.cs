@@ -1,32 +1,33 @@
 ﻿using System;
-using System.Net.Http;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using IntegrationTests.Utilities;
+using TravelTracker;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace IntegrationTests
 {
-    public class TestServerClientFixture<TStartup> : IDisposable where TStartup : class
+    public class TestServerClientFixture<TStartup> : TestBase<TStartup> where TStartup : Startup, IDisposable
     {
         public TestServerClientFixture()
         {
-			var builder = new WebHostBuilder()
-				.UseContentRoot(ProductionCodePath.GetTravelTracker())
-                .UseEnvironment("Development")
-				.UseStartup<TStartup>();
-            
-			Server = new TestServer(builder);
-			Client = Server.CreateClient();
+            Admin = new IdentityUser()
+            {
+                UserName = "admin",
+                Email = "admin@test.com"
+            };
+
+            User = new IdentityUser()
+            {
+                UserName = "someUser",
+                Email = "user@test.com"
+            };
+
+            var userManager = (UserManager<IdentityUser>)Server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
+
+            userManager.CreateAsync(Admin).Wait();
+            userManager.CreateAsync(User).Wait();
         }
 
-        public TestServer Server { get; private set; }
-
-        public HttpClient Client { get; private set; }
-
-        public void Dispose()
-        {
-            Server.Dispose();
-            Client.Dispose();
-        }
+        public IdentityUser Admin { get; }
+        public IdentityUser User { get; }
     }
 }

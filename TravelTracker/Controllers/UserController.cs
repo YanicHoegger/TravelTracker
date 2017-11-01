@@ -8,7 +8,6 @@ using TravelTracker.User;
 namespace TravelTracker.Controllers
 {
     //TODO: Instead of Access Denied Page, 'localhost redirected you too many times' comes
-    //TODO: Authorize Admin
     [Authorize(Policy = "UserLogedIn")]
     public class UserController : Controller
     {
@@ -122,14 +121,6 @@ namespace TravelTracker.Controllers
 
             return View(nameof(Index), CreateViewModel(user));
         }
-
-        //TODO: Remove as soon as a better way is found to give admin rights
-        //public async Task<IActionResult> MakeAdmin([ModelBinder(BinderType = typeof(UserBinder))] IdentityUser user)
-        //{
-        //    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Administrator"));
-
-        //    return Redirect("~/");
-        //}
 
         UserDetailsViewModel CreateViewModel(IdentityUser user)
         {

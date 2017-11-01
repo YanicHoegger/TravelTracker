@@ -51,9 +51,6 @@ namespace TravelTracker.Controllers
                 return View(viewModel);
             }
 
-            //TODO: Remove as soon as a better way is found to give admin rights
-            //await _userManager.AddClaimAsync(newUser, new Claim(ClaimTypes.Role, "Administrator"));
-
             return Content("Registering user successful");
         }
 

@@ -1,22 +1,26 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using IntegrationTests.TestStartups;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
 
 namespace IntegrationTests
 {
     //TODO: Should those test go into the specific controller test?
-    public class VisitSiteTest : TestBase<MemoryDbContextWithFakeSignInStartup>
+    public class VisitSiteTest : IClassFixture<TestServerClientFixture<MemoryDbContextWithFakeSignInStartup>>
     {
+        readonly TestServerClientFixture<MemoryDbContextWithFakeSignInStartup> _testServerClient;
+
+        public VisitSiteTest(TestServerClientFixture<MemoryDbContextWithFakeSignInStartup> testServerClient)
+        {
+            _testServerClient = testServerClient;
+        }
+
         [Theory]
         [InlineData("/")]
         [InlineData("/Home/Index")]
         [InlineData("/Home/Error")]
-        public async Task VisitSiteSuccessful(string site)
+        public async Task VisitSiteSuccessfulTest(string site)
         {
             await WhenVisitSite(site);
             ThenSuccess();
@@ -25,7 +29,7 @@ namespace IntegrationTests
 		[Theory]
 		[InlineData("/Account/Register")]
 		[InlineData("/Account/DisplayAll")]
-        public async Task VisitSiteThenAccessDenied(string site)
+        public async Task VisitSiteThenAccessDeniedTest(string site)
         {
 			await WhenVisitSite(site);
             ThenAccessDenied();
@@ -34,74 +38,59 @@ namespace IntegrationTests
         [Theory]
         [InlineData("/Account/Register")]
         [InlineData("/Account/DisplayAll")]
-        public async Task VisitSiteAsAdminSuccessful(string site)
+        public async Task VisitSiteAsAdminSuccessfulTest(string site)
 		{
-            await GivenLogedInAsAdmin();
+            GivenLogedInAsAdmin();
 			await WhenVisitSite(site);
 			ThenSuccess();
 		}
 
         [Fact]
-        public async Task VisitUserSiteWhenNotLogedInThenAccessDenied()
+        public async Task VisitUserSiteWhenNotLogedInThenAccessDeniedTest()
         {
-            await GivenUserAccount();
             await WhenVisitUserSite();
 			ThenAccessDenied();
         }
 
 		[Fact]
-		public async Task VisitUserSiteWhenLogedInThenSuccessful()
+		public async Task VisitUserSiteWhenLogedInThenSuccessfulTest()
 		{
-            await GivenUserAccountAndLogedIn();
+            GivenLogedInAsUser();
 			await WhenVisitUserSite();
 			ThenSuccess();
 		}
 
+        [Fact]
+        public async Task VisitUserSiteWhenLogedInAsAdminTest()
+        {
+            GivenLogedInAsAdmin();
+            await WhenVisitUserSite();
+            ThenSuccess();
+        }
+
 		HttpResponseMessage Response;
 
-        IdentityUser user = new IdentityUser()
+        void GivenLogedInAsAdmin()
         {
-			UserName = "someUser",
-			Email = "user@test.com"
-        };
-
-        async Task GivenLogedInAsAdmin()
-        {
-            await CreateUserAccount();
-
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", new[] { user.UserName, "Administrator" });
+            _testServerClient.Client.DefaultRequestHeaders.Add(
+                "IntegrationTestLogin", 
+                new[] { _testServerClient.Admin.UserName, "Administrator" });
         }
 
-        async Task GivenUserAccount()
+        void GivenLogedInAsUser()
         {
-            await CreateUserAccount();
-        }
-
-        async Task GivenUserAccountAndLogedIn()
-        {
-            await CreateUserAccount();
-            LogInUser();
-        }
-
-		async Task CreateUserAccount()
-		{
-			var userManager = Server.Host.Services.GetService(typeof(UserManager<IdentityUser>)) as UserManager<IdentityUser>;
-            await userManager.CreateAsync(user);
-		}
-
-        void LogInUser()
-        {
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", user.UserName);
+            _testServerClient.Client.DefaultRequestHeaders.Add(
+                "IntegrationTestLogin", _testServerClient.User.UserName);
         }
 
         async Task WhenVisitSite(string site)
         {
-            Response = await Client.GetAsync(site);
+            Response = await _testServerClient.Client.GetAsync(site);
         }
 
         Task WhenVisitUserSite()
         {
-            return WhenVisitSite($"traveller/{user.UserName}");
+            return WhenVisitSite($"traveller/{_testServerClient.User.UserName}");
         }
 
         void ThenSuccess()
