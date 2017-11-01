@@ -34,7 +34,7 @@ namespace UnitTests.UserControllerTests
 		{
             viewModel = new NewUserNameViewModel()
             {
-                NewUserName = newUserName
+                Value = newUserName
             };
 		}
     }

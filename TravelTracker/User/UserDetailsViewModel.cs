@@ -7,57 +7,24 @@ namespace TravelTracker.User
 {
     public class UserDetailsViewModel
     {
-        public UserDetailsViewModel() { }
-
-        public UserDetailsViewModel(IdentityUser identityUser)
-        {
-            UpdateFromIdentityUser(this, identityUser);
-        }
-
         public NewEmailViewModel NewEmail { get; set; }
 
         public NewUserNameViewModel NewUserName { get; set; }
 
         public NewPasswordViewModel NewPassword { get; set; }
-
-        public void UpdateFromIdentityUser(IdentityUser identityUser)
-        {
-            UpdateFromIdentityUser(this, identityUser);
-        }
-
-        static void UpdateFromIdentityUser(UserDetailsViewModel model, IdentityUser identityUser)
-        {
-            model.NewUserName = new NewUserNameViewModel(identityUser.UserName);
-            model.NewEmail = new NewEmailViewModel(identityUser.Email);
-        }
     }
 
     public class NewUserNameViewModel
     {
-        public NewUserNameViewModel() { }
-
-        public NewUserNameViewModel(string userName)
-        {
-            NewUserName = userName;
-        }
-
         [Required(ErrorMessage = "The New User Name field is required")]
-        public string NewUserName { get; set; }
+        public string Value { get; set; }
     }
 
-    //TODO: Name refactoring, is constructor needed?
     public class NewEmailViewModel
     {
-        public NewEmailViewModel() { }
-
-        public NewEmailViewModel(string email)
-        {
-            NewEmail = email;
-        }
-
         [Required(ErrorMessage = "The New Email field is required")]
         [EmailAddress(ErrorMessage = "This is not a valid e-mail address")]
-		public string NewEmail { get; set; }
+		public string Value { get; set; }
     }
 
     public class NewPasswordViewModel : IValidatableObject

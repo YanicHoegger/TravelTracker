@@ -26,7 +26,7 @@ namespace TravelTracker.Controllers
                 return NotFound();
             }
 
-            return View(new UserDetailsViewModel(user));
+            return View(CreateViewModel(user));
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace TravelTracker.Controllers
                 return View(nameof(Index), viewModel);
             }
 
-            user.UserName = viewModel.NewUserName.NewUserName;
+            user.UserName = viewModel.NewUserName.Value;
             var identityResult = await _userManager.UpdateAsync(user);
 
             if (!identityResult.Succeeded)
@@ -77,7 +77,7 @@ namespace TravelTracker.Controllers
 				return View(nameof(Index), viewModel);
 			}
 
-            user.Email = viewModel.NewEmail.NewEmail;
+            user.Email = viewModel.NewEmail.Value;
 			var identityResult = await _userManager.UpdateAsync(user);
 
             if(!identityResult.Succeeded)
@@ -90,8 +90,7 @@ namespace TravelTracker.Controllers
                 return View(nameof(Index), viewModel);
             }
 
-            viewModel.UpdateFromIdentityUser(user);
-            return View(nameof(Index), viewModel);
+            return View(nameof(Index), CreateViewModel(user));
         }
 
         [HttpPost]
@@ -121,10 +120,7 @@ namespace TravelTracker.Controllers
 				return View(nameof(Index), viewModel); 
             }
 
-            //TODO: Why not redirect?
-            viewModel = new UserDetailsViewModel();
-			viewModel.UpdateFromIdentityUser(user);
-			return View(nameof(Index), viewModel);
+            return View(nameof(Index), CreateViewModel(user));
         }
 
         //TODO: Remove as soon as a better way is found to give admin rights
@@ -134,5 +130,21 @@ namespace TravelTracker.Controllers
 
         //    return Redirect("~/");
         //}
+
+        UserDetailsViewModel CreateViewModel(IdentityUser user)
+        {
+            return new UserDetailsViewModel()
+            {
+                NewEmail = new NewEmailViewModel()
+                {
+                    Value = user.Email
+                },
+                NewUserName = new NewUserNameViewModel()
+                {
+                    Value = user.UserName
+                },
+                NewPassword = new NewPasswordViewModel()
+            };
+        }
     }
 }

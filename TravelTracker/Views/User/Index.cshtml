@@ -4,7 +4,7 @@
 
 
 @{
-    ViewData["Title"] = Model.NewUserName.NewUserName;
+    ViewData["Title"] = Model.NewUserName.Value;
 }
 
 @section Stylesheets{
@@ -15,7 +15,7 @@
 
 <div class="panel-group" id="accordion">
   <div class="panel panel-default">
-    <userdetails name="Username" value="@Model.NewUserName.NewUserName" content-href="#collapse1"></userdetails>
+    <userdetails name="Username" value="@Model.NewUserName.Value" content-href="#collapse1"></userdetails>
     <div id="collapse1" class="panel-collapse collapse">
       @if(ViewData.ModelState.IsFieldInvalid("NewUserName.NewUserName"))
       {
@@ -25,8 +25,8 @@
 		<form method="POST" asp-controller="User" asp-action="ChangeUserName">
             <div class="form-group">
                 <label>New Username</label>
-                <input asp-for="NewUserName.NewUserName" value="@Model.NewUserName.NewUserName" class="form-control"/>
-				<span asp-validation-for="NewUserName.NewUserName" class="text-danger"></span>
+                <input asp-for="NewUserName.Value" value="@Model.NewUserName.Value" class="form-control"/>
+				<span asp-validation-for="NewUserName.Value" class="text-danger"></span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
 			<a class="btn" asp-controller="User" asp-action="Index">Cancel</a>
@@ -35,7 +35,7 @@
     </div>
   </div>
   <div class="panel panel-default">
-    <userdetails name="Email" value="@Model.NewEmail.NewEmail" content-href="#collapse2"></userdetails>
+    <userdetails name="Email" value="@Model.NewEmail.Value" content-href="#collapse2"></userdetails>
     <div id="collapse2" class="panel-collapse collapse">
       @if(ViewData.ModelState.IsFieldInvalid("NewEmail.NewEmail"))
       {
@@ -45,8 +45,8 @@
         <form method="POST" asp-controller="User" asp-action="ChangeEmail">
             <div class="form-group">
                 <label>New Email</label>
-                <input asp-for="NewEmail.NewEmail" value="@Model.NewEmail.NewEmail" class="form-control"/>
-				<span asp-validation-for="NewEmail.NewEmail" class="text-danger"></span>
+                <input asp-for="NewEmail.Value" value="@Model.NewEmail.Value" class="form-control"/>
+				<span asp-validation-for="NewEmail.Value" class="text-danger"></span>
             </div>
             <input type="submit" value="Save" class="btn btn-primary"/>
 		    <a class="btn" asp-controller="User" asp-action="Index">Cancel</a>

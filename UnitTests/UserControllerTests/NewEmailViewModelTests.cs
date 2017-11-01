@@ -46,7 +46,7 @@ namespace UnitTests.UserControllerTests
         {
             viewModel = new NewEmailViewModel()
             {
-                NewEmail = email
+                Value = email
             };
         }
     }

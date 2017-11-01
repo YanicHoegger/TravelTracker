@@ -72,7 +72,7 @@ namespace UnitTests.UserControllerTests
 			{
                 NewEmail = new NewEmailViewModel()
 				{
-                    NewEmail = ""
+                    Value = ""
 				}
 			};
 		}
@@ -89,7 +89,7 @@ namespace UnitTests.UserControllerTests
 			{
 				NewEmail = new NewEmailViewModel()
 				{
-					NewEmail = ""
+					Value = ""
 				}
 			};
 		}
