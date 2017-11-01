@@ -15,8 +15,14 @@ namespace IntegrationTests.Utilities
             //TODO: Maybe use test name as shown in 
             //https://stackoverflow.com/questions/31212224/how-to-get-xunit-test-method-name-in-base-class-even-before-the-control-goes-to/31212346#31212346
 
-            FolderName = "Test_" + DateTime.Now.ToString("yyyy-MM-dd-HH:mm:ss");
-            AbsoluteFolderName = Directory.GetCurrentDirectory() + "/" + FolderName;
+            var currentDirectory = Directory.GetCurrentDirectory();
+
+            do
+            {
+                FolderName = "Test_" + DateTime.Now.ToString("yyyy-MM-dd-HH:mm:ss");
+                AbsoluteFolderName = currentDirectory + "/" + FolderName;
+            } 
+            while (Directory.Exists(AbsoluteFolderName));
 
             Directory.CreateDirectory(AbsoluteFolderName);
         }
