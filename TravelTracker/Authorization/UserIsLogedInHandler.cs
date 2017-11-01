@@ -27,13 +27,20 @@ namespace TravelTracker.Authorization
 
             if(_signInManager.IsSignedIn(context.User))
             {
-                var userNameOfSignedInUser = context.User.FindFirst(ClaimTypes.Name).Value;
-                var userNameFromUrl = (string)authorizationFilterContext.RouteData.Values["username"];
-
-				if (userNameOfSignedInUser.Equals(userNameFromUrl, StringComparison.CurrentCultureIgnoreCase))
-				{
+                if(context.User.FindFirst(ClaimTypes.Role).Value.Equals("Administrator"))
+                {
                     context.Succeed(requirement);
-				}
+                }
+                else
+                {
+                    var userNameOfSignedInUser = context.User.FindFirst(ClaimTypes.Name).Value;
+                    var userNameFromUrl = (string)authorizationFilterContext.RouteData.Values["username"];
+
+                    if (userNameOfSignedInUser.Equals(userNameFromUrl, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        context.Succeed(requirement);
+                    }
+                }
             }
 
             return Task.CompletedTask;
