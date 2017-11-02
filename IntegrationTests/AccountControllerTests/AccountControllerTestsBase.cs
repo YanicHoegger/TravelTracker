@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace IntegrationTests.AccountControllerTests
 {
-    public class AccountControllerTestsBase : TestBase<SqlliteDbContextWithFakeSignInStartup>
+    public class AccountControllerTestsBase : TestBase<SqlliteDbContextStartup>
     {
         public AccountControllerTestsBase()
         {
@@ -21,10 +21,8 @@ namespace IntegrationTests.AccountControllerTests
                 Email = "test@test.com"
             };
 
-            var userManager = (UserManager<IdentityUser>)Server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
-            await userManager.CreateAsync(user);
-
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", new[] { user.UserName, "Administrator" });
+            await AccountHelper.CreateUserAsync(user);
+            AccountHelper.LoginUserAsAdmin(user);
         }
 
         protected async Task<string> GetAntiForgeryToken(string action)

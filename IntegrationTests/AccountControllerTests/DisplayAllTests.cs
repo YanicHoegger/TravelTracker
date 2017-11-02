@@ -11,17 +11,12 @@ using Xunit;
 
 namespace IntegrationTests.AccountControllerTests
 {
-    public class DisplayAllTests : TestBase<MemoryDbContextWithFakeSignInStartup>
+    public class DisplayAllTests : TestBase<MemoryDbContextStartUp>
     {
-        public DisplayAllTests()
-        {
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", new[] { users[0].UserName, "Administrator" });
-        }
-
         [Fact]
         public async Task DisplayAllAccountsTest()
         {
-            await GivenAccounts();
+            await GivenAccountsAndLogedInOne();
 
             await WhenDisplayAll();
 
@@ -43,7 +38,7 @@ namespace IntegrationTests.AccountControllerTests
             }
         };
 
-        async Task GivenAccounts()
+        async Task GivenAccountsAndLogedInOne()
         {
             var userManager = (UserManager<IdentityUser>)Server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
    
@@ -51,6 +46,8 @@ namespace IntegrationTests.AccountControllerTests
             {
                 await userManager.CreateAsync(user);
             }
+
+            AccountHelper.LoginUserAsAdmin(users[0]);
         }
 
         async Task WhenDisplayAll()

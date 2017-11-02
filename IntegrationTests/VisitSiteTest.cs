@@ -7,11 +7,11 @@ using Xunit;
 namespace IntegrationTests
 {
     //TODO: Should those test go into the specific controller test?
-    public class VisitSiteTest : IClassFixture<TestServerClientFixture<MemoryDbContextWithFakeSignInStartup>>
+    public class VisitSiteTest : IClassFixture<TestServerClientFixture<MemoryDbContextStartUp>>
     {
-        readonly TestServerClientFixture<MemoryDbContextWithFakeSignInStartup> _testServerClient;
+        readonly TestServerClientFixture<MemoryDbContextStartUp> _testServerClient;
 
-        public VisitSiteTest(TestServerClientFixture<MemoryDbContextWithFakeSignInStartup> testServerClient)
+        public VisitSiteTest(TestServerClientFixture<MemoryDbContextStartUp> testServerClient)
         {
             _testServerClient = testServerClient;
         }
@@ -72,15 +72,12 @@ namespace IntegrationTests
 
         void GivenLogedInAsAdmin()
         {
-            _testServerClient.Client.DefaultRequestHeaders.Add(
-                "IntegrationTestLogin", 
-                new[] { _testServerClient.Admin.UserName, "Administrator" });
+            _testServerClient.AccountHelper.LoginUserAsAdmin(_testServerClient.Admin);
         }
 
         void GivenLogedInAsUser()
         {
-            _testServerClient.Client.DefaultRequestHeaders.Add(
-                "IntegrationTestLogin", _testServerClient.User.UserName);
+            _testServerClient.AccountHelper.LoginUser(_testServerClient.User);
         }
 
         async Task WhenVisitSite(string site)

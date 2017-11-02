@@ -52,13 +52,6 @@ namespace IntegrationTests
             ThenSuccessfullyLogedOutAsync();
         }
 
-        public LoginControllerTests() : base()
-        {
-            _accountHelper = new AccountHelper(Server);
-        }
-
-        readonly AccountHelper _accountHelper;
-
         IdentityUser user = new IdentityUser()
 		{
 			UserName = "test",
@@ -70,14 +63,14 @@ namespace IntegrationTests
 
         async Task GivenAccount()
         {
-            await _accountHelper.CreateUserAsync(user, validPassword);
+            await AccountHelper.CreateUserAsync(user, validPassword);
         }
 
         async Task GivenLogedIn()
         {
             await GivenAccount();
 
-            await WhenRightLoginAsync();
+            AccountHelper.LoginUser(user);
         }
 
         async Task WhenLoginWithWrongPasswordAsync()
@@ -150,7 +143,7 @@ namespace IntegrationTests
 
             var cookies = CookiesHelper.ExtractCookiesFromResponse(response);
             Assert.True(cookies.ContainsKey(".AspNetCore.Identity.Application"));
-            Assert.True(string.IsNullOrEmpty(cookies[".AspNetCore.Identity.Application"]));
+            Assert.Equal("", cookies[".AspNetCore.Identity.Application"]);
         }
     }
 }

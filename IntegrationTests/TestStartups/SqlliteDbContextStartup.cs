@@ -9,7 +9,7 @@ using TravelTracker;
 
 namespace IntegrationTests.TestStartups
 {
-    public class SqlliteDbContextStartup : Startup, IDisposable
+    public class SqlliteDbContextStartup : StartupBase
     {
         readonly TestFolderCreator _testfolderCreator;
 
@@ -31,7 +31,7 @@ namespace IntegrationTests.TestStartups
             return new SqliteConnection(DbConnectionString);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _testfolderCreator.Dispose();
         }

@@ -1,36 +1,47 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.TestHost;
 
 namespace IntegrationTests.Utilities
 {
-    //TODO: Is this class really needed?
     public class AccountHelper
     {
-        public UserManager<IdentityUser> UserManager { get; private set; }
-        public SignInManager<IdentityUser> SignInManager { get; private set; }
+        readonly UserManager<IdentityUser> _userManager;
+        readonly HttpClient _client;
         
-        public AccountHelper(TestServer server)
+        public AccountHelper(TestServer server, HttpClient client)
         {
-            UserManager = (UserManager<IdentityUser>)server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
-            SignInManager = (SignInManager<IdentityUser>)server.Host.Services.GetService(typeof(SignInManager<IdentityUser>));
+            _userManager = (UserManager<IdentityUser>)server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
+            _client = client;
         }
 
 		public async Task CreateUserAsync(IdentityUser user, string password)
 		{
-			await UserManager.CreateAsync(user, password);
+			await _userManager.CreateAsync(user, password);
 		}
 
-		public async Task LoginUserAsync(IdentityUser user, string password)
-		{
-			await SignInManager.PasswordSignInAsync(user, password, false, false);
-		}
+        public async Task CreateUserAsync(IdentityUser user)
+        {
+            await _userManager.CreateAsync(user);
+        }
 
-		public async Task CreateAndLoginUser(IdentityUser user, string password)
-		{
-			await CreateUserAsync(user, password);
-			await LoginUserAsync(user, password);
-		}
+        public void LoginUser(IdentityUser user)
+        {
+            _client.DefaultRequestHeaders.Remove("IntegrationTestLogin");
+
+            _client.DefaultRequestHeaders.Add(
+                "IntegrationTestLogin", user.UserName);
+        }
+
+        public void LoginUserAsAdmin(IdentityUser user)
+        {
+            _client.DefaultRequestHeaders.Remove("IntegrationTestLogin");
+
+            _client.DefaultRequestHeaders.Add(
+                "IntegrationTestLogin", 
+                new[] { user.UserName, "Administrator" });
+        }
     }
 }

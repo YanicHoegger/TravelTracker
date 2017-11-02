@@ -7,7 +7,7 @@ using TravelTracker;
 
 namespace IntegrationTests.TestStartups
 {
-    public class MemoryDbContextStartUp : Startup, IDisposable
+    public class MemoryDbContextStartUp : StartupBase
     {
         public MemoryDbContextStartUp(IHostingEnvironment env) : base(env)
         {
@@ -23,7 +23,7 @@ namespace IntegrationTests.TestStartups
             //Nothing to do here, because of memory db
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             //Nothing to do here, because of memory db
         }

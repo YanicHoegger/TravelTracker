@@ -26,6 +26,7 @@ namespace IntegrationTests
 			Server = new TestServer(builder);
 			Client = Server.CreateClient();
             CookieClient = new CookieClient(Client);
+            AccountHelper = new AccountHelper(Server, Client);
         }
 
         static TStartup ConfigureStartUpService(IServiceCollection serviceCollection)
@@ -48,6 +49,8 @@ namespace IntegrationTests
         public CookieClient CookieClient { get; }
 
         public TStartup Startup { get; private set; }
+
+        public AccountHelper AccountHelper { get; }
 
         public virtual void Dispose()
         {

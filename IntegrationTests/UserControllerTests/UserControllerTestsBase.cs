@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using IntegrationTests.TestStartups;
 using IntegrationTests.Utilities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace IntegrationTests.UserControllerTests
 {
-    public class UserControllerTestsBase : TestBase<SqlliteDbContextWithFakeSignInStartup>
+    public class UserControllerTestsBase : TestBase<SqlliteDbContextStartup>
     {
         protected UserControllerTestsBase()
         {
@@ -27,10 +25,8 @@ namespace IntegrationTests.UserControllerTests
 
         private async Task CreateUserAndLogIn()
         {
-            var userManager = (UserManager<IdentityUser>)Server.Host.Services.GetService(typeof(UserManager<IdentityUser>));
-            await userManager.CreateAsync(User, Password);
-
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", User.UserName);
+            await AccountHelper.CreateUserAsync(User, Password);
+            AccountHelper.LoginUser(User);
         }
 
         protected async Task<string> GetAntiForgeryToken()
