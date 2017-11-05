@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using IntegrationTests.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
@@ -50,7 +51,6 @@ namespace IntegrationTests.AccountControllerTests
         {
             Assert.Equal(HttpStatusCode.Found, response.StatusCode);
 
-            //TODO: Redirect in Helper class or in base class
             var redirectLocation = response.Headers.Location;
             var redirectedResponse = await Client.GetAsync("Account/" + redirectLocation.OriginalString);
             redirectedResponse.EnsureSuccessStatusCode();

@@ -46,7 +46,7 @@ namespace IntegrationTests.UserControllerTests
             var formData = new Dictionary<string, string>
               {
                 {"__RequestVerificationToken", await GetAntiForgeryToken()},
-                {"NewEmail.NewEmail", newEmail}
+                {"NewEmail.Value", newEmail}
               };
 
             Response = await CookieClient.PostAsync($"traveller/{User.UserName}/ChangeEmail", formData);

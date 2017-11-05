@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using IntegrationTests.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
@@ -59,7 +60,7 @@ namespace IntegrationTests.UserControllerTests
             var formData = new Dictionary<string, string>
               {
                 {"__RequestVerificationToken", await GetAntiForgeryToken()},
-                {"NewUserName.NewUserName", NewUserName}
+                {"NewUserName.Value", NewUserName}
               };
 
             Response = await CookieClient.PostAsync($"/traveller/{User.UserName}/ChangeUserName", formData);
@@ -67,10 +68,15 @@ namespace IntegrationTests.UserControllerTests
 
         async Task ThenSuccessfulUserNameChanged()
         {
-            Assert.Equal(HttpStatusCode.Found, Response.StatusCode);
+            var newUser = new IdentityUser()
+            {
+                UserName = NewUserName,
+                Email = User.Email
+            };
 
-            Client.DefaultRequestHeaders.Remove("IntegrationTestLogin");
-            Client.DefaultRequestHeaders.Add("IntegrationTestLogin", NewUserName);
+            AccountHelper.LoginUser(newUser);
+
+            Assert.Equal(HttpStatusCode.Found, Response.StatusCode);
 
             var redirectLocation = Response.Headers.Location;
             var redirectedResponse = await CookieClient.GetAsync(redirectLocation.OriginalString);

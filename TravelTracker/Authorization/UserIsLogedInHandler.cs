@@ -27,7 +27,8 @@ namespace TravelTracker.Authorization
 
             if(_signInManager.IsSignedIn(context.User))
             {
-                if(context.User.FindFirst(ClaimTypes.Role).Value.Equals("Administrator"))
+                var roleClaim = context.User.FindFirst(ClaimTypes.Role);
+                if(roleClaim != null && roleClaim.Value.Equals("Administrator"))
                 {
                     context.Succeed(requirement);
                 }
