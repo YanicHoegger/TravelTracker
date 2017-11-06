@@ -26,8 +26,7 @@ namespace TravelTracker.User
 
             if(userNameAsString == null)
             {
-                //TODO: Use own Exception --> Declare in issues on github
-                throw new ArgumentException("ModelBinder is used with the wrong route");
+                throw new UserBinderException("ModelBinder is used with the wrong route");
             }
 
             var user = await _userManager.FindByNameAsync(userNameAsString);
