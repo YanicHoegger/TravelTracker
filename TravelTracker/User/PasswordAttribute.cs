@@ -26,8 +26,7 @@ namespace TravelTracker.User
 
             if (identityOptionsProvider == null)
             {
-                //TODO: Make own Exceptions
-                throw new TypeAccessException($"Can't find '{nameof(IIdentityOptionsProvider)}' service in service collection");
+                throw new ServiceCollectionException($"Can't find '{nameof(IIdentityOptionsProvider)}' service in service collection");
             }
 
 			MergeAttribute(context.Attributes, "data-val", "true");
