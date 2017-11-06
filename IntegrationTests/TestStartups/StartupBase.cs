@@ -39,7 +39,7 @@ namespace IntegrationTests.TestStartups
                 var user = await userManager.FindByNameAsync(userName);
                 if (user == null)
                 {
-                    return; //TODO: Throw an exception here?
+                    throw new FakeSignInException($"Cant find user {userName}");
                 }
 
                 if (integrationTestUserHeader.Count > 1)
