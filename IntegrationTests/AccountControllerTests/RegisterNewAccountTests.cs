@@ -35,15 +35,6 @@ namespace IntegrationTests.AccountControllerTests
             retypePassword = password;
         }
 
-        void GivenWrongValues()
-        {
-            //TODO: Use already given username
-            email = "invalidEmail";
-            userName = "test";
-            password = "as";
-            retypePassword = "sadfaf";
-        }
-
         async Task WhenRegister()
         {
             var formData = new Dictionary<string, string>()
@@ -86,21 +77,6 @@ namespace IntegrationTests.AccountControllerTests
 
                 connection.Close();
             }
-        }
-
-        async Task ThenRegisterSiteWithErrors()
-        {
-            //Throws Exception if not success
-            response.EnsureSuccessStatusCode();
-
-            Stream stream = await response.Content.ReadAsStreamAsync();
-            HtmlDocument doc = new HtmlDocument();
-            doc.Load(stream);
-
-            Assert.NotNull(doc.GetElementbyId("Email-error"));
-            Assert.NotNull(doc.GetElementbyId("UserName-error"));
-            Assert.NotNull(doc.GetElementbyId("Password-error"));
-            Assert.NotNull(doc.GetElementbyId("RetypePassword-error"));
         }
     }
 }
