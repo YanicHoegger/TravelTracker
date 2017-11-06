@@ -1,17 +1,16 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using IntegrationTests.TestStartups;
 using Xunit;
 
 namespace IntegrationTests
 {
     //TODO: Should those test go into the specific controller test?
-    public class VisitSiteTest : IClassFixture<TestServerClientFixture<MemoryDbContextStartUp>>
+    public class VisitSiteTest : IClassFixture<MemoryTestServerClientFixture>
     {
-        readonly TestServerClientFixture<MemoryDbContextStartUp> _testServerClient;
+        readonly MemoryTestServerClientFixture _testServerClient;
 
-        public VisitSiteTest(TestServerClientFixture<MemoryDbContextStartUp> testServerClient)
+        public VisitSiteTest(MemoryTestServerClientFixture testServerClient)
         {
             _testServerClient = testServerClient;
         }

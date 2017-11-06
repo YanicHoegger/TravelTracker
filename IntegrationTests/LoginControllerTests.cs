@@ -1,106 +1,66 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using IntegrationTests.TestStartups;
 using IntegrationTests.Utilities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Xunit;
 
 namespace IntegrationTests
 {
-    public class LoginControllerTests : TestBase<MemoryDbContextStartUp>
+    public class LoginControllerTests : IClassFixture<MemoryTestServerClientFixture>
     {
-        [Fact]
-        public async Task LoginWithWrongPasswordNotSuccessfulTest()
+        readonly MemoryTestServerClientFixture _testServerClient;
+
+        public LoginControllerTests(MemoryTestServerClientFixture testServerClient)
         {
-            await GivenAccount();
+            _testServerClient = testServerClient;
+        }
 
-            await WhenLoginWithWrongPasswordAsync();
+        [Fact]
+        public async Task RightLoginIsSuccessfulTest()
+        {
+            await WhenLogin();
 
-            await ThenNotSuccessfullyLogedInAsync();
+            await ThenSuccessfullyLogedInAsync();
         }
 
         [Fact]
         public async Task WhenLogOutThenSuccessfullyLogedOutTest()
         {
-            await GivenLogedIn();
+            GivenLogedIn();
 
             await WhenLogOut();
 
             ThenSuccessfullyLogedOutAsync();
         }
 
-        IdentityUser user = new IdentityUser()
-		{
-			UserName = "test",
-			Email = "test@test.com"
-		};
-        string validPassword = "ValidPassword123";
-
         HttpResponseMessage response;
 
-        async Task GivenAccount()
+        void GivenLogedIn()
         {
-            await AccountHelper.CreateUserAsync(user, validPassword);
+            _testServerClient.AccountHelper.LoginUser(_testServerClient.User);
         }
 
-        async Task GivenLogedIn()
+        async Task WhenLogin()
         {
-            await GivenAccount();
+            var formData = new Dictionary<string, string>
+              {
+                {"Email", _testServerClient.User.Email},
+                {"Password", _testServerClient.UserPassword}
+              };
 
-            AccountHelper.LoginUser(user);
-        }
+            HttpRequestMessage postRequest = new HttpRequestMessage(HttpMethod.Post, "Login/Login")
+            {
+                Content = new FormUrlEncodedContent(formData)
+            };
 
-        async Task WhenLoginWithWrongPasswordAsync()
-        {
-            await Login(user.Email, "wrong password");
-        }
 
-        async Task WhenLoginWithWrongUserNameAsync()
-        {
-            await Login("wrong username", validPassword);
-        }
-
-        async Task WhenRightLoginAsync()
-        {
-            await Login(user.Email, validPassword);
+            response = await _testServerClient.Client.SendAsync(postRequest);
         }
 
         async Task WhenLogOut()
         {
             var content = new StringContent("");
-            response = await Client.PostAsync("Login/Logout", content);
-        }
-
-        async Task Login(string email, string password)
-        {
-			var formData = new Dictionary<string, string>
-              {
-            	{"Email", email},
-            	{"Password", password}
-              };
-
-			HttpRequestMessage postRequest = new HttpRequestMessage(HttpMethod.Post, "Login/Login")
-			{
-				Content = new FormUrlEncodedContent(formData)
-			};
-
-
-			response = await Client.SendAsync(postRequest);
-        }
-
-        async Task ThenNotSuccessfullyLogedInAsync()
-        {
-            //Throws Exception if not success
-            response.EnsureSuccessStatusCode();
-
-			Stream stream = await response.Content.ReadAsStreamAsync();
-			HtmlDocument doc = new HtmlDocument();
-			doc.Load(stream);
-
-            Assert.NotNull(doc.GetElementbyId("LoginForm"));
+            response = await _testServerClient.Client.PostAsync("Login/Logout", content);
         }
 
         async Task ThenSuccessfullyLogedInAsync()
@@ -114,7 +74,7 @@ namespace IntegrationTests
 
             var content = await response.Content.ReadAsStringAsync();
             Assert.Contains("Redirect", content);
-            Assert.Contains(user.UserName, content);
+            Assert.Contains(_testServerClient.User.UserName, content);
         }
 
         void ThenSuccessfullyLogedOutAsync()
