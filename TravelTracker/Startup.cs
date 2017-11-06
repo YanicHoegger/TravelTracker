@@ -87,7 +87,6 @@ namespace TravelTracker
 
             ConfigureMiddleware(app);
 
-            //TODO: Unit Test for routing
             app.UseMvc(routes =>
             {
 				routes.MapRoute(
