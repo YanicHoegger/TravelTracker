@@ -17,16 +17,6 @@ namespace IntegrationTests.UserControllerTests
             ThenEmailChanged();
         }
 
-        [Fact]
-        public async Task ChangeEmailNotSuccessfulTest()
-        {
-            GivenWrongNewEmailValue();
-
-            await WhenChangeEmail();
-
-            ThenEmailNotChanged();
-        }
-
         string newEmail;
 
         HttpResponseMessage Response;

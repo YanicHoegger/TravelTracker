@@ -20,16 +20,6 @@ namespace IntegrationTests.AccountControllerTests
             await ThenSuccessfulRegistered();
         }
 
-        [Fact]
-        public async Task RegisterNewUserWithWrongValuesNotSuccessfulTest()
-        {
-            GivenWrongValues();
-
-            await WhenRegister();
-
-            await ThenRegisterSiteWithErrors();
-        }
-
         string userName;
         string email;
         string password;

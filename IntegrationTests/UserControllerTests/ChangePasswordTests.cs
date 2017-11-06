@@ -22,16 +22,6 @@ namespace IntegrationTests.UserControllerTests
             ThenSuccessfulChangedPassword();
         }
 
-        [Fact]
-        public async Task ChangePasswordNotSuccessfulTest()
-        {
-            GivenWrongPasswordValues();
-
-            await WhenChangePassword();
-
-            ThenPasswordNotChanged();
-        }
-
         readonly string oldPasswordHash;
 
         string currentPassword;

@@ -23,17 +23,6 @@ namespace IntegrationTests.UserControllerTests
             await ThenSuccessfulUserNameChanged();
         }
 
-        [Fact]
-        public async Task ChangeUserNameNotSuccessfulTest()
-        {
-            await GivenAlreayUsedNewUserName();
-
-            //TODO: Check how no exception is thrown when update db
-            await WhenChangeUserName();
-
-            ThenNotSuccessfulUserNameChanged();
-        }
-
         string NewUserName;
         HttpResponseMessage Response;
 

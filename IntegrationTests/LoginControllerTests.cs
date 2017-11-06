@@ -23,26 +23,6 @@ namespace IntegrationTests
         }
 
         [Fact]
-        public async Task LoginWithWrongUserNameNotSuccessfulTest()
-        {
-            await GivenAccount();
-
-            await WhenLoginWithWrongUserNameAsync();
-
-            await ThenNotSuccessfullyLogedInAsync();
-        }
-
-        [Fact]
-        public async Task RightLoginIsSuccessfulTest()
-        {
-            await GivenAccount();
-
-            await WhenRightLoginAsync();
-
-            await ThenSuccessfullyLogedInAsync();
-        }
-
-        [Fact]
         public async Task WhenLogOutThenSuccessfullyLogedOutTest()
         {
             await GivenLogedIn();
